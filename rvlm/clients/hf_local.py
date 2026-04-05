@@ -4,8 +4,18 @@ HuggingFace Local client — runs models locally via transformers.
 Supports vision-language models (e.g. Gemma 4, MedGemma, LLaVA) with
 AutoModelForImageTextToText, and text-only models with AutoModelForCausalLM.
 
+Includes an optional three-layer caching service (``enable_cache=True``):
+
+- **Vision feature cache** — avoids re-running the ViT encoder on the same
+  image across RVLM iterations.
+- **KV-cache prefix reuse** — retains the KV-cache for the shared prompt
+  prefix (system prompt + images) so that only the new per-turn suffix
+  needs a forward pass.
+- **Chunked prefill** — splits long sequences into GPU-friendly chunks to
+  avoid OOM on memory-constrained devices.
+
 Usage:
-    client = HFLocalClient(model_name="google/gemma-4-26B-A4B-it")
+    client = HFLocalClient(model_name="google/gemma-4-26B-A4B-it", enable_cache=True)
     response = client.completion("Describe this image in detail.")
 """
 
@@ -61,6 +71,8 @@ class HFLocalClient(BaseLM):
         hf_token: str | None = None,
         vision: bool = True,
         trust_remote_code: bool = False,
+        enable_cache: bool = False,
+        prefill_chunk_size: int = 512,
         **kwargs,
     ):
         """
@@ -73,6 +85,12 @@ class HFLocalClient(BaseLM):
             vision: If True, load as a vision-language model (AutoModelForImageTextToText).
                     If False, load as text-only (AutoModelForCausalLM).
             trust_remote_code: Whether to trust remote code in the model repo.
+            enable_cache: If True, activate the three-layer inference cache:
+                          vision feature cache, KV-cache prefix reuse, and
+                          chunked prefill.  Recommended for RVLM multi-iteration
+                          loops where the same images are analysed repeatedly.
+            prefill_chunk_size: Maximum tokens per forward-pass chunk during
+                                prefill (only used when enable_cache=True).
         """
         super().__init__(model_name=model_name, **kwargs)
 
@@ -118,6 +136,14 @@ class HFLocalClient(BaseLM):
 
         self.last_prompt_tokens = 0
         self.last_completion_tokens = 0
+
+        # Inference cache (vision features, KV-prefix, chunked prefill)
+        self._cache_enabled = enable_cache
+        self._cache: Any = None
+        if enable_cache:
+            from rvlm.cache import InferenceCache
+
+            self._cache = InferenceCache(chunk_size=prefill_chunk_size)
 
     # ------------------------------------------------------------------ #
     #  Model loading                                                       #
@@ -210,6 +236,11 @@ class HFLocalClient(BaseLM):
             add_generation_prompt=True,
         )
 
+        # --- Vision feature cache: reuse ViT embeddings for seen images ---
+        cached_pixel_values = None
+        if self._cache_enabled and self._cache is not None and pil_images:
+            cached_pixel_values = self._resolve_vision_features(pil_images)
+
         # Tokenize — include images only if present
         if pil_images:
             inputs = self.processor(
@@ -225,8 +256,18 @@ class HFLocalClient(BaseLM):
 
         inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
 
+        # Substitute cached vision features if available
+        if cached_pixel_values is not None and "pixel_values" in inputs:
+            inputs["pixel_values"] = cached_pixel_values.to(self.model.device)
+
         prompt_len = inputs["input_ids"].shape[-1]
 
+        # --- Cached generation path (KV-prefix reuse + chunked prefill) ---
+        if self._cache_enabled and self._cache is not None:
+            output_text = self._generate_with_cache(inputs, prompt_len, model_name)
+            return output_text
+
+        # --- Standard path (no cache) ---
         with self.torch.inference_mode():
             generated = self.model.generate(
                 **inputs,
@@ -238,11 +279,134 @@ class HFLocalClient(BaseLM):
 
         new_tokens = generated[0][prompt_len:]
         output_len = len(new_tokens)
-
-        # Track usage
         self._track_usage(model_name, prompt_len, output_len)
 
         return self.processor.decode(new_tokens, skip_special_tokens=True).strip()
+
+    def _generate_with_cache(
+        self,
+        inputs: dict[str, Any],
+        prompt_len: int,
+        model_name: str,
+    ) -> str:
+        """Generation path that uses the InferenceCache for KV-prefix reuse
+        and chunked prefill.
+
+        Flow:
+        1. If the KV-cache manager has a saved prefix and the current prompt
+           starts with the same prefix, restore the KV snapshot and only
+           forward the new suffix tokens.
+        2. Otherwise, run a (potentially chunked) prefill to build the cache
+           from scratch, then save the prefix snapshot for future turns.
+        3. Feed the resulting KV-cache + suffix into ``model.generate()``.
+        """
+        from rvlm.cache import chunked_prefill
+
+        cache = self._cache
+        input_ids = inputs["input_ids"]
+        attention_mask = inputs.get("attention_mask")
+        pixel_values = inputs.get("pixel_values")
+        seq_len = input_ids.shape[1]
+
+        # Separate extra vision kwargs (image_sizes, etc.)
+        extra_keys = {k for k in inputs if k not in ("input_ids", "attention_mask", "pixel_values")}
+        extra_inputs = {k: inputs[k] for k in extra_keys}
+
+        past_key_values = None
+        decode_start = 0
+
+        if cache.kv.has_prefix:
+            # Restore the KV-cache for the shared prefix
+            past_key_values, prefix_len = cache.kv.restore_prefix(self.torch)
+            saved_tokens = min(prefix_len, seq_len)
+            cache.kv.stats.total_saved_tokens += saved_tokens
+
+            if saved_tokens < seq_len:
+                # Forward only the new suffix
+                suffix_ids = input_ids[:, saved_tokens:]
+                suffix_mask = attention_mask[:, :seq_len] if attention_mask is not None else None
+
+                with self.torch.inference_mode():
+                    outputs = self.model(
+                        input_ids=suffix_ids,
+                        attention_mask=suffix_mask,
+                        past_key_values=past_key_values,
+                        use_cache=True,
+                    )
+                past_key_values = outputs.past_key_values
+        else:
+            # First call — run chunked prefill and save prefix
+            _, past_key_values = chunked_prefill(
+                model=self.model,
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                pixel_values=pixel_values,
+                chunk_size=cache.chunk_size,
+                torch_module=self.torch,
+                **extra_inputs,
+            )
+            cache.kv.save_prefix(past_key_values, seq_len, self.torch)
+
+        # Generate from the cached KV state
+        with self.torch.inference_mode():
+            generated = self.model.generate(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                past_key_values=past_key_values,
+                max_new_tokens=self.max_new_tokens,
+                do_sample=False,
+                top_p=None,
+                top_k=None,
+            )
+
+        new_tokens = generated[0][prompt_len:]
+        output_len = len(new_tokens)
+        self._track_usage(model_name, prompt_len, output_len)
+
+        return self.processor.decode(new_tokens, skip_special_tokens=True).strip()
+
+    def _resolve_vision_features(self, pil_images: list[Any]) -> Any | None:
+        """Check the vision feature cache for each image; run the ViT encoder
+        only for unseen images.
+
+        Returns a stacked pixel-feature tensor suitable for substitution into
+        the model inputs, or None if caching cannot be applied.
+        """
+        if self._cache is None:
+            return None
+
+        cache = self._cache
+        all_cached = True
+        features_list: list[Any] = []
+
+        for img in pil_images:
+            feat = cache.vision.get(img)
+            if feat is not None:
+                features_list.append(feat)
+            else:
+                all_cached = False
+                break
+
+        if all_cached and features_list:
+            return self.torch.cat(features_list, dim=0)
+
+        # Run the vision encoder for all images and cache the results.
+        # We process all images together (matching the processor's expected
+        # batching) and then split per-image for caching.
+        dummy_inputs = self.processor(
+            text="<placeholder>",
+            images=pil_images,
+            return_tensors="pt",
+        )
+        if "pixel_values" in dummy_inputs:
+            pv = dummy_inputs["pixel_values"].to(self.model.device)
+            # Cache per-image slices (assumes first dim is batch)
+            if pv.shape[0] == len(pil_images):
+                for i, img in enumerate(pil_images):
+                    cache.vision.put(img, pv[i : i + 1])
+            return pv
+
+        return None
 
     # ------------------------------------------------------------------ #
     #  Message / image preparation                                         #
@@ -340,3 +504,21 @@ class HFLocalClient(BaseLM):
             total_input_tokens=self.last_prompt_tokens,
             total_output_tokens=self.last_completion_tokens,
         )
+
+    # ------------------------------------------------------------------ #
+    #  Cache management                                                    #
+    # ------------------------------------------------------------------ #
+
+    def get_cache_stats(self) -> dict[str, Any]:
+        """Return a summary of cache hit/miss statistics.
+
+        Returns an empty dict when caching is disabled.
+        """
+        if self._cache is not None:
+            return self._cache.summary()
+        return {}
+
+    def clear_cache(self) -> None:
+        """Drop all cached vision features and KV-cache state."""
+        if self._cache is not None:
+            self._cache.clear()

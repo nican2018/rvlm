@@ -195,6 +195,8 @@ def build_backend_kwargs(args: argparse.Namespace) -> dict[str, Any]:
         "device_map": args.device_map,
         "hf_token": args.hf_token or os.getenv("HF_TOKEN") or os.getenv("HUGGINGFACE_HUB_TOKEN"),
         "vision": not args.no_vision,
+        "enable_cache": not args.no_cache,
+        "prefill_chunk_size": args.prefill_chunk_size,
     }
 
 
@@ -247,6 +249,9 @@ def run_single_pass(args: argparse.Namespace, images: list[str]) -> str:
     print(f"\n⏱  Time: {elapsed:.2f}s")
     usage = client.get_last_usage()
     print(f"📊 Tokens: {usage.total_input_tokens} in / {usage.total_output_tokens} out")
+    cache_stats = client.get_cache_stats()
+    if cache_stats:
+        print(f"🗄  Cache: {cache_stats}")
     return response
 
 
@@ -303,6 +308,7 @@ def run_rvlm_recursive(
     print_section("RVLM RECURSIVE OUTPUT", result.response)
     print(f"\n⏱  Total time: {elapsed:.2f}s")
     print(f"📊 Usage: {result.usage_summary.to_dict()}")
+
     return result
 
 
@@ -410,6 +416,19 @@ def main() -> None:
         "--report-dir",
         default="./reports",
         help="Directory in which to save the PDF report (default: ./reports).",
+    )
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Disable the inference cache (vision feature cache, KV-prefix "
+             "reuse, and chunked prefill).  Cache is ON by default.",
+    )
+    parser.add_argument(
+        "--prefill-chunk-size",
+        type=int,
+        default=512,
+        help="Max tokens per chunk during prefill (default: 512). "
+             "Lower values reduce peak GPU memory; higher values are faster.",
     )
     args = parser.parse_args()
 

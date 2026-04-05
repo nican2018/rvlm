@@ -55,6 +55,7 @@ A **clinical PDF reporting sub-agent** converts RVLM outputs into formal, doctor
   - [Clinical PDF Reports](#clinical-pdf-report-generation)
 - [Supported Backends](#supported-backends)
 - [Execution Environments](#execution-environments)
+- [Inference Cache](#inference-cache)
 - [Recursion Router](#recursion-router)
 - [REPL API Reference](#repl-api-reference)
 - [Full API Reference](#full-api-reference)
@@ -418,6 +419,48 @@ python -m examples.prime_repl_example    # Prime (requires: PRIME_API_KEY)
 
 ---
 
+## Inference Cache
+
+When running local models (Gemma 4 via `hf_local`), RVLM provides a three-layer caching service that eliminates redundant computation across the iterative generate–execute loop:
+
+| Layer | What it caches | Speedup |
+|-------|---------------|---------|
+| **Vision Feature Cache** | ViT encoder output per image (SHA-256 keyed) | Skips ~200 ms / image / iteration |
+| **KV-Cache Prefix Reuse** | Shared prompt prefix (system + images) across turns | Saves >1 000 redundant token positions / turn |
+| **Chunked Prefill** | Splits long prefills into GPU-friendly chunks | Prevents OOM on constrained GPUs |
+
+Enable it by passing `enable_cache=True` in `backend_kwargs`:
+
+```python
+model = RVLM(
+    backend="hf_local",
+    backend_kwargs={
+        "model_name": "google/gemma-4-26B-A4B-it",
+        "max_new_tokens": 2048,
+        "enable_cache": True,           # activate all three layers
+        "prefill_chunk_size": 512,      # max tokens per prefill chunk
+    },
+    environment="local",
+    max_iterations=8,
+    verbose=True,
+)
+```
+
+```bash
+# Cache is ON by default in gemma4_example
+python -m examples.gemma4_example --mode rvlm
+
+# Disable cache for benchmarking
+python -m examples.gemma4_example --mode rvlm --no-cache
+
+# Tune chunk size for your GPU memory
+python -m examples.gemma4_example --mode rvlm --prefill-chunk-size 256
+```
+
+The cache is completely opt-in and backward-compatible — existing code that does not set `enable_cache` behaves exactly as before.
+
+---
+
 ## Recursion Router
 
 The `RecursionRouter` makes iteration depth **adaptive** rather than fixed.  It has two roles:
@@ -584,9 +627,10 @@ npm run dev
 ```
 rvlm/
 ├── rvlm/                    # Core package
-│   ├── __init__.py          # Exports: RLM, RVLM, RecursionRouter, ImageInput, encode_image
+│   ├── __init__.py          # Exports: RLM, RVLM, RecursionRouter, InferenceCache, …
 │   ├── rvlm.py              # RVLM — vision extension of RLM
 │   ├── router.py             # RecursionRouter — adaptive iteration depth
+│   ├── cache.py              # InferenceCache — vision / KV / chunked-prefill caching
 │   ├── types.py              # ImageInput dataclass
 │   ├── image_utils.py        # encode_image() — file/URL/base64 → ImageInput
 │   ├── prompts.py            # RVLM system prompt + message builders
