@@ -617,7 +617,7 @@ npm run dev
 ```
 
 <p align="center">
-  <img src="media/visualizer.png" alt="RLM Trajectory Visualiser" width="800"/>
+  <img src="media/visualizer.png" alt="RVLM Trajectory Visualiser" width="800"/>
 </p>
 
 ---
