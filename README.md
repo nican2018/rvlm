@@ -603,20 +603,6 @@ print(result.to_dict())
 # }
 ```
 
----
-
-## Trajectory Visualiser
-
-Every `completion()` call with a logger saves a `.jsonl` trajectory to `logs/`.  Use the built-in web visualiser to inspect the full trace:
-
-```bash
-cd visualizer/
-npm install
-npm run dev
-# Open http://localhost:3001 and select a .jsonl file
-```
-
-
 ## Project Structure
 
 ```
