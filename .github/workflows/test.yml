@@ -33,5 +33,5 @@ jobs:
           python -m pytest tests/ -v \
             --ignore=tests/repl/test_modal_repl.py \
             --ignore=tests/clients/ \
-            --cov=rlm \
+            --cov=rvlm \
             --cov-report=term-missing
