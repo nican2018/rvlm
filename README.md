@@ -24,9 +24,9 @@
 
 **RVLM** (Recursive Vision Language Model) is a framework for auditable, multi-step reasoning over medical images.  Instead of a single opaque prediction, RVLM runs an iterative **generate → execute** loop:
 
-1. **Generate** — the LLM writes Python code or sub-queries inside a REPL block.
-2. **Execute** — the code runs in a sandboxed REPL with access to `describe_image()`, `llm_query_with_images()`, image manipulation, and statistics.
-3. **Iterate** — the model reads the execution output and decides whether to inspect further or conclude.
+1. **Generate** : the LLM writes Python code or sub-queries inside a REPL block.
+2. **Execute** : the code runs in a sandboxed REPL with access to `describe_image()`, `llm_query_with_images()`, image manipulation, and statistics.
+3. **Iterate** : the model reads the execution output and decides whether to inspect further or conclude.
 
 Every diagnostic claim is grounded in executable code — no black-box outputs.
 
@@ -465,8 +465,8 @@ The cache is completely opt-in and backward-compatible — existing code that do
 
 The `RecursionRouter` makes iteration depth **adaptive** rather than fixed.  It has two roles:
 
-1. **Pre-flight** — predicts the optimal iteration budget from task-complexity features (e.g. segmentation mask statistics).
-2. **Per-iteration** — monitors REPL state for stalling and terminates early when reasoning is unproductive.
+1. **Pre-flight** : predicts the optimal iteration budget from task-complexity features (e.g. segmentation mask statistics).
+2. **Per-iteration** : monitors REPL state for stalling and terminates early when reasoning is unproductive.
 
 **Complexity features** (medical imaging):
 
