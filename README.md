@@ -616,11 +616,6 @@ npm run dev
 # Open http://localhost:3001 and select a .jsonl file
 ```
 
-<p align="center">
-  <img src="media/visualizer.png" alt="RVLM Trajectory Visualiser" width="800"/>
-</p>
-
----
 
 ## Project Structure
 
