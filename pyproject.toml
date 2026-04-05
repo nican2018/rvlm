@@ -1,5 +1,5 @@
 [project]
-name = "RVLMs"
+name = "rvlms"
 authors = [
     {name = "Nicanor Mayumu"},
     {name = "Zeenath Khan"},
