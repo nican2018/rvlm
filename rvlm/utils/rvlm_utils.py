@@ -10,6 +10,3 @@ def filter_sensitive_keys(kwargs: dict[str, Any]) -> dict[str, Any]:
             continue
         filtered[key] = value
     return filtered
-
-
-

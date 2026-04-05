@@ -292,17 +292,19 @@ class RLM:
                 # If FINAL_VAR was attempted but failed, add error feedback
                 # so the model knows to create the variable first or use FINAL().
                 if re.search(r"FINAL_VAR\(", iteration.response):
-                    message_history.append({
-                        "role": "user",
-                        "content": (
-                            "ERROR: Your FINAL_VAR() call failed because the variable "
-                            "does not exist in the REPL environment. You MUST first "
-                            "create and assign the variable in a ```repl``` code block, "
-                            "then call FINAL_VAR(variable_name) in a SEPARATE step. "
-                            "Alternatively, use FINAL(your answer text here) to provide "
-                            "the answer directly without needing a variable."
-                        ),
-                    })
+                    message_history.append(
+                        {
+                            "role": "user",
+                            "content": (
+                                "ERROR: Your FINAL_VAR() call failed because the variable "
+                                "does not exist in the REPL environment. You MUST first "
+                                "create and assign the variable in a ```repl``` code block, "
+                                "then call FINAL_VAR(variable_name) in a SEPARATE step. "
+                                "Alternatively, use FINAL(your answer text here) to provide "
+                                "the answer directly without needing a variable."
+                            ),
+                        }
+                    )
 
                 # Router-based early termination (stall detection).
                 # Completion detection (FINAL_VAR / FINAL) is already handled above.
@@ -313,9 +315,7 @@ class RLM:
                         final_answer = self._default_answer(message_history, lm_handler)
                         usage = lm_handler.get_usage_summary()
                         self.verbose.print_final_answer(final_answer)
-                        self.verbose.print_summary(
-                            i + 1, time_end - time_start, usage.to_dict()
-                        )
+                        self.verbose.print_summary(i + 1, time_end - time_start, usage.to_dict())
                         if self.persistent and isinstance(environment, SupportsPersistence):
                             environment.add_history(message_history)
                         return RLMChatCompletion(
@@ -452,6 +452,3 @@ class RLM:
     def __exit__(self, exc_type, exc_val, exc_tb) -> bool:
         self.close()
         return False
-
-
-

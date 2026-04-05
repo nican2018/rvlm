@@ -17,16 +17,12 @@ from rich.text import Text
 
 from rvlm.core.types import CodeBlock, RLMIteration, RLMMetadata
 
-
 # Regex pattern to detect base64 image data embedded in prompts
 # Matches data URIs like "data:image/png;base64,..." or long base64 strings
 BASE64_DATA_URI_PATTERN = re.compile(
-    r'data:image/[a-zA-Z0-9+.-]+;base64,[A-Za-z0-9+/=]{100,}',
-    re.IGNORECASE
+    r"data:image/[a-zA-Z0-9+.-]+;base64,[A-Za-z0-9+/=]{100,}", re.IGNORECASE
 )
-LONG_BASE64_PATTERN = re.compile(
-    r'[A-Za-z0-9+/=]{500,}'
-)
+LONG_BASE64_PATTERN = re.compile(r"[A-Za-z0-9+/=]{500,}")
 
 # ============================================================================
 # Tokyo Night Color Theme
@@ -412,6 +408,3 @@ class VerbosePrinter:
         self.console.print(summary_table, justify="center")
         self.console.print(Rule(style=COLORS["border"], characters="═"))
         self.console.print()
-
-
-

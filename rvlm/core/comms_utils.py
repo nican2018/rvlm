@@ -262,6 +262,3 @@ def send_lm_request_batched(
         ]
     except Exception as e:
         return [LMResponse.error_response(f"Request failed: {e}")] * len(prompts)
-
-
-

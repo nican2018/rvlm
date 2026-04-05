@@ -141,12 +141,14 @@ class GeminiClient(BaseLM):
                     # data:image/jpeg;base64,<data> → inline_data
                     header, b64_data = image_url.split(",", 1)
                     mime_type = header.split(":")[1].split(";")[0]
-                    parts.append(types.Part(
-                        inline_data=types.Blob(
-                            mime_type=mime_type,
-                            data=base64.b64decode(b64_data),
+                    parts.append(
+                        types.Part(
+                            inline_data=types.Blob(
+                                mime_type=mime_type,
+                                data=base64.b64decode(b64_data),
+                            )
                         )
-                    ))
+                    )
                 else:
                     # HTTP(S) URL → download and send as inline_data
                     resp = requests.get(
@@ -158,12 +160,14 @@ class GeminiClient(BaseLM):
                     mime_type = resp.headers.get("Content-Type", "").split(";")[0]
                     if not mime_type or not mime_type.startswith("image/"):
                         mime_type = mimetypes.guess_type(image_url)[0] or "image/jpeg"
-                    parts.append(types.Part(
-                        inline_data=types.Blob(
-                            mime_type=mime_type,
-                            data=resp.content,
+                    parts.append(
+                        types.Part(
+                            inline_data=types.Blob(
+                                mime_type=mime_type,
+                                data=resp.content,
+                            )
                         )
-                    ))
+                    )
         return parts
 
     def _track_cost(self, response: types.GenerateContentResponse, model: str):
@@ -202,6 +206,3 @@ class GeminiClient(BaseLM):
             total_input_tokens=self.last_prompt_tokens,
             total_output_tokens=self.last_completion_tokens,
         )
-
-
-

@@ -140,6 +140,3 @@ class AzureOpenAIClient(BaseLM):
             total_input_tokens=self.last_prompt_tokens,
             total_output_tokens=self.last_completion_tokens,
         )
-
-
-

@@ -40,6 +40,3 @@ def encode_image(source: str) -> ImageInput:
     with open(path, "rb") as f:
         data = base64.b64encode(f.read()).decode("utf-8")
     return ImageInput(data=data, media_type=media_type)
-
-
-

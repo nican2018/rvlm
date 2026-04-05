@@ -19,31 +19,32 @@ Usage (standalone):
 
 import json
 import re
-import subprocess
 import shutil
+import subprocess
 from datetime import date
 from pathlib import Path
 from typing import Any
 
 from rvlm.clients import get_client
 
-
 # ---------------------------------------------------------------------------
 # LaTeX character escaping
 # ---------------------------------------------------------------------------
 
-_LATEX_ESCAPE_MAP = str.maketrans({
-    "&":  r"\&",
-    "%":  r"\%",
-    "$":  r"\$",
-    "#":  r"\#",
-    "_":  r"\_",
-    "{":  r"\{",
-    "}":  r"\}",
-    "~":  r"\textasciitilde{}",
-    "^":  r"\textasciicircum{}",
-    "\\": r"\textbackslash{}",
-})
+_LATEX_ESCAPE_MAP = str.maketrans(
+    {
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+        "\\": r"\textbackslash{}",
+    }
+)
 
 
 def _esc(text: str) -> str:
@@ -54,12 +55,12 @@ def _esc(text: str) -> str:
 def _strip_markdown(text: str) -> str:
     """Remove common markdown constructs (bold, italic, bullets, headers)."""
     text = re.sub(r"\*\*(.+?)\*\*", r"\1", text)
-    text = re.sub(r"\*(.+?)\*",     r"\1", text)
-    text = re.sub(r"__(.+?)__",     r"\1", text)
-    text = re.sub(r"_(.+?)_",       r"\1", text)
-    text = re.sub(r"^\s*[*\-]\s+",  "",    text, flags=re.MULTILINE)
-    text = re.sub(r"^#{1,6}\s+",    "",    text, flags=re.MULTILINE)
-    text = re.sub(r"\n{3,}",        "\n\n", text)
+    text = re.sub(r"\*(.+?)\*", r"\1", text)
+    text = re.sub(r"__(.+?)__", r"\1", text)
+    text = re.sub(r"_(.+?)_", r"\1", text)
+    text = re.sub(r"^\s*[*\-]\s+", "", text, flags=re.MULTILINE)
+    text = re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE)
+    text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
 
@@ -97,14 +98,15 @@ def _extract_sections(client, report_text: str) -> dict[str, str]:
 
     # Strip any accidental markdown code fences the model might add
     raw = re.sub(r"^```[a-z]*\n?", "", raw.strip(), flags=re.IGNORECASE)
-    raw = re.sub(r"```$",          "", raw.strip())
+    raw = re.sub(r"```$", "", raw.strip())
 
     try:
         data = json.loads(raw)
     except json.JSONDecodeError:
         fallback = _strip_markdown(report_text)[:400] + " [extraction failed]"
-        data = {k: fallback for k in
-                ("location", "sub_regions", "mass_effect", "features", "agreement")}
+        data = {
+            k: fallback for k in ("location", "sub_regions", "mass_effect", "features", "agreement")
+        }
 
     for key in ("location", "sub_regions", "mass_effect", "features", "agreement"):
         data.setdefault(key, "Not available.")
@@ -249,23 +251,22 @@ def _build_stats_block(mask_stats: dict | None) -> str:
     if not mask_stats:
         return _STATS_NO_GT.strip()
 
-    ncr   = mask_stats.get("NCR_volume_cc", 0.0)
-    ed    = mask_stats.get("ED_volume_cc",  0.0)
-    et    = mask_stats.get("ET_volume_cc",  0.0)
+    ncr = mask_stats.get("NCR_volume_cc", 0.0)
+    ed = mask_stats.get("ED_volume_cc", 0.0)
+    et = mask_stats.get("ET_volume_cc", 0.0)
     total = ncr + ed + et or 1.0
 
     return (
-        _STATS_WITH_GT
-        .replace("<<NCR>>",        f"{ncr:.2f}")
-        .replace("<<NCR_PCT>>",    f"{100 * ncr / total:.0f}")
-        .replace("<<ED>>",         f"{ed:.2f}")
-        .replace("<<ED_PCT>>",     f"{100 * ed / total:.0f}")
-        .replace("<<ET>>",         f"{et:.2f}")
-        .replace("<<ET_PCT>>",     f"{100 * et / total:.0f}")
-        .replace("<<TOTAL>>",      f"{ncr + ed + et:.2f}")
-        .replace("<<SLICE_IDX>>",  str(mask_stats.get("slice_idx",    "?")))
+        _STATS_WITH_GT.replace("<<NCR>>", f"{ncr:.2f}")
+        .replace("<<NCR_PCT>>", f"{100 * ncr / total:.0f}")
+        .replace("<<ED>>", f"{ed:.2f}")
+        .replace("<<ED_PCT>>", f"{100 * ed / total:.0f}")
+        .replace("<<ET>>", f"{et:.2f}")
+        .replace("<<ET_PCT>>", f"{100 * et / total:.0f}")
+        .replace("<<TOTAL>>", f"{ncr + ed + et:.2f}")
+        .replace("<<SLICE_IDX>>", str(mask_stats.get("slice_idx", "?")))
         .replace("<<TOTAL_SLICES>>", str(mask_stats.get("total_slices", "?")))
-        .replace("<<HEMISPHERE>>", _esc(str(mask_stats.get("hemisphere",  "unknown"))))
+        .replace("<<HEMISPHERE>>", _esc(str(mask_stats.get("hemisphere", "unknown"))))
         .replace("<<POSITION_AP>>", _esc(str(mask_stats.get("position_ap", "unknown"))))
     ).strip()
 
@@ -273,6 +274,7 @@ def _build_stats_block(mask_stats: dict | None) -> str:
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 class LatexReportGenerator:
     """
@@ -341,17 +343,16 @@ class LatexReportGenerator:
         model_name = self.backend_kwargs.get("model_name", "unknown")
 
         return (
-            _LATEX_TEMPLATE
-            .replace("<<DATE>>",        date.today().isoformat())
-            .replace("<<PATIENT_ID>>",  _esc(patient_id))
-            .replace("<<MODEL_NAME>>",  _esc(model_name))
-            .replace("<<EXEC_TIME>>",   f"{result.execution_time:.1f}")
+            _LATEX_TEMPLATE.replace("<<DATE>>", date.today().isoformat())
+            .replace("<<PATIENT_ID>>", _esc(patient_id))
+            .replace("<<MODEL_NAME>>", _esc(model_name))
+            .replace("<<EXEC_TIME>>", f"{result.execution_time:.1f}")
             .replace("<<STATS_BLOCK>>", _build_stats_block(mask_stats))
-            .replace("<<LOCATION>>",    _esc(_strip_markdown(sections["location"])))
+            .replace("<<LOCATION>>", _esc(_strip_markdown(sections["location"])))
             .replace("<<SUB_REGIONS>>", _esc(_strip_markdown(sections["sub_regions"])))
             .replace("<<MASS_EFFECT>>", _esc(_strip_markdown(sections["mass_effect"])))
-            .replace("<<FEATURES>>",    _esc(_strip_markdown(sections["features"])))
-            .replace("<<AGREEMENT>>",   _esc(_strip_markdown(sections["agreement"])))
+            .replace("<<FEATURES>>", _esc(_strip_markdown(sections["features"])))
+            .replace("<<AGREEMENT>>", _esc(_strip_markdown(sections["agreement"])))
         )
 
     # ------------------------------------------------------------------
@@ -364,7 +365,7 @@ class LatexReportGenerator:
 
         # Run pdflatex from inside output_dir and pass only the filename.
         # This avoids Windows backslash-in-path being misread as LaTeX commands.
-        for run in (1, 2):   # two passes for correct page references
+        for run in (1, 2):  # two passes for correct page references
             print(f"[LatexReport] pdflatex pass {run}/2...")
             proc = subprocess.run(
                 [pdflatex, "-interaction=nonstopmode", tex_path.name],
@@ -598,24 +599,23 @@ class CXRLatexReportGenerator(LatexReportGenerator):
 
     def _build_cxr_latex(self, result, patient_id, cxr_info, sections):
         model_name = self.backend_kwargs.get("model_name", "unknown")
-        views_str  = ", ".join(cxr_info.get("views", ["unknown"]))
-        n_images   = str(cxr_info.get("n_images", "?"))
-        gt_raw     = cxr_info.get("gt_report", "Not available.")
+        views_str = ", ".join(cxr_info.get("views", ["unknown"]))
+        n_images = str(cxr_info.get("n_images", "?"))
+        gt_raw = cxr_info.get("gt_report", "Not available.")
         # Truncate GT to avoid overflowing page
         gt_display = _esc(_strip_markdown(gt_raw[:800]))
 
         return (
-            _CXR_LATEX_TEMPLATE
-            .replace("<<DATE>>",       date.today().isoformat())
+            _CXR_LATEX_TEMPLATE.replace("<<DATE>>", date.today().isoformat())
             .replace("<<PATIENT_ID>>", _esc(patient_id))
             .replace("<<MODEL_NAME>>", _esc(model_name))
-            .replace("<<EXEC_TIME>>",  f"{result.execution_time:.1f}")
-            .replace("<<VIEWS>>",      _esc(views_str))
-            .replace("<<N_IMAGES>>",   n_images)
-            .replace("<<GT_REPORT>>",  gt_display)
-            .replace("<<LUNGS>>",      _esc(_strip_markdown(sections["lungs"])))
-            .replace("<<CARDIAC>>",    _esc(_strip_markdown(sections["cardiac"])))
-            .replace("<<PLEURA>>",     _esc(_strip_markdown(sections["pleura"])))
-            .replace("<<BONES>>",      _esc(_strip_markdown(sections["bones"])))
+            .replace("<<EXEC_TIME>>", f"{result.execution_time:.1f}")
+            .replace("<<VIEWS>>", _esc(views_str))
+            .replace("<<N_IMAGES>>", n_images)
+            .replace("<<GT_REPORT>>", gt_display)
+            .replace("<<LUNGS>>", _esc(_strip_markdown(sections["lungs"])))
+            .replace("<<CARDIAC>>", _esc(_strip_markdown(sections["cardiac"])))
+            .replace("<<PLEURA>>", _esc(_strip_markdown(sections["pleura"])))
+            .replace("<<BONES>>", _esc(_strip_markdown(sections["bones"])))
             .replace("<<IMPRESSION>>", _esc(_strip_markdown(sections["impression"])))
         )

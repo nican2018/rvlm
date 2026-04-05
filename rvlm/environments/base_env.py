@@ -180,6 +180,3 @@ class SupportsPersistence(Protocol):
         are available.
         """
         ...
-
-
-

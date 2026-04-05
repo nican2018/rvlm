@@ -67,10 +67,10 @@ import numpy as np
 from dotenv import load_dotenv
 from PIL import Image
 
+from examples.latex_report import LatexReportGenerator
 from rvlm import RVLM
 from rvlm.logger import RLMLogger
 from rvlm.router import RecursionRouter
-from examples.latex_report import LatexReportGenerator
 
 load_dotenv()
 
@@ -78,9 +78,9 @@ DATA_DIR = Path(__file__).parent.parent / "data" / "BraTS-MEN-Train"
 
 # BraTS 2023 segmentation label definitions: label → (short name, full name, RGB colour)
 SEG_LABELS: dict[int, tuple[str, str, tuple[int, int, int]]] = {
-    1: ("NCR", "Necrotic Core",      (220,  50,  50)),   # red
-    2: ("ED",  "Peritumoral Edema",  (255, 200,   0)),   # yellow
-    3: ("ET",  "Enhancing Tumour",   (  0, 210, 100)),   # green
+    1: ("NCR", "Necrotic Core", (220, 50, 50)),  # red
+    2: ("ED", "Peritumoral Edema", (255, 200, 0)),  # yellow
+    3: ("ET", "Enhancing Tumour", (0, 210, 100)),  # green
 }
 # Some BraTS releases encode ET as label 4; treat it identically to 3.
 _ET_LABELS = {3, 4}
@@ -98,6 +98,7 @@ MRI_LABELS = {
 # Segmentation mask utilities
 # ---------------------------------------------------------------------------
 
+
 def get_signal_peak_slice(t1c_path: str, t1n_path: str) -> int:
     """Estimate the slice with the most tumour enhancement when no seg mask exists.
 
@@ -113,7 +114,7 @@ def get_signal_peak_slice(t1c_path: str, t1n_path: str) -> int:
         lo, hi = v.min(), v.max()
         return (v - lo) / (hi - lo + 1e-8)
 
-    diff = (_norm(t1c) - _norm(t1n)).clip(0, None)   # enhancement = T1c brighter than T1n
+    diff = (_norm(t1c) - _norm(t1n)).clip(0, None)  # enhancement = T1c brighter than T1n
     per_slice = diff.mean(axis=(0, 1))
     return int(np.argmax(per_slice))
 
@@ -126,7 +127,7 @@ def get_peak_tumor_slice(seg_path: str) -> int:
     voxels — guaranteeing RVLM always sees the most informative view.
     """
     mask = np.asarray(nib.load(seg_path).dataobj, dtype=np.uint8)
-    per_slice = (mask > 0).sum(axis=(0, 1))   # sum over X, Y → one count per Z
+    per_slice = (mask > 0).sum(axis=(0, 1))  # sum over X, Y → one count per Z
     return int(np.argmax(per_slice))
 
 
@@ -151,8 +152,8 @@ def compute_mask_stats(seg_path: str) -> dict:
 
     total_voxels = 0
     for label, (short, _name, _color) in SEG_LABELS.items():
-        region = (mask == label)
-        if label == 3:                       # merge label 4 into ET
+        region = mask == label
+        if label == 3:  # merge label 4 into ET
             region = region | (mask == 4)
         voxels = int(region.sum())
         total_voxels += voxels
@@ -221,7 +222,7 @@ def mask_to_overlay_png(
 
     # Blend each sub-region with its assigned colour
     for label, (_short, _name, color) in SEG_LABELS.items():
-        region = (seg_slice == label)
+        region = seg_slice == label
         if label == 3:
             region = region | (seg_slice == 4)
         if not region.any():
@@ -246,6 +247,7 @@ def mask_to_overlay_png(
 # NIfTI → PNG (single modality)
 # ---------------------------------------------------------------------------
 
+
 def nifti_to_png(nifti_path: str, slice_idx: int, output_path: str | None = None) -> str:
     """Convert one axial slice of a NIfTI volume to a grayscale PNG."""
     data = np.asarray(nib.load(nifti_path).dataobj, dtype=np.float32)
@@ -265,6 +267,7 @@ def nifti_to_png(nifti_path: str, slice_idx: int, output_path: str | None = None
 # ---------------------------------------------------------------------------
 # Patient directory helpers
 # ---------------------------------------------------------------------------
+
 
 def get_patient_dir(patient_id: str) -> Path:
     """Return the patient directory, falling back to the first available."""
@@ -369,6 +372,7 @@ def prepare_patient_images(
 # Prompt helper
 # ---------------------------------------------------------------------------
 
+
 def _format_mask_stats(stats: dict) -> str:
     """Format mask statistics into the ground truth block used in prompts."""
     if not stats:
@@ -390,6 +394,7 @@ def _format_mask_stats(stats: dict) -> str:
 # RVLM analysis functions
 # ---------------------------------------------------------------------------
 
+
 def run_segmentation_grounded_analysis(
     rvlm: RVLM,
     slices: dict[str, str],
@@ -408,31 +413,29 @@ def run_segmentation_grounded_analysis(
     image_paths = [slices[k] for k in image_order]
 
     image_index_labels = {
-        "t1n":    "T1 native (no contrast)",
-        "t1c":    "T1 contrast-enhanced",
-        "t2w":    "T2-weighted",
-        "t2f":    "T2-FLAIR",
+        "t1n": "T1 native (no contrast)",
+        "t1c": "T1 contrast-enhanced",
+        "t2w": "T2-weighted",
+        "t2f": "T2-FLAIR",
         "overlay": "T1c + segmentation overlay  [Red=NCR  Yellow=ED  Green=ET]",
     }
     images_block = "\n".join(
-        f"  Image {i}: {image_index_labels[k]}"
-        for i, k in enumerate(image_order)
+        f"  Image {i}: {image_index_labels[k]}" for i, k in enumerate(image_order)
     )
     gt_block = _format_mask_stats(mask_stats)
     overlay_idx = image_order.index("overlay") if "overlay" in image_order else None
     has_gt = bool(mask_stats)
 
     # ---- Build prompt variables for GT vs. inference modes ----
-    overlay_var = "overlay_q"   if has_gt else "enhancement_q"
-    cross_var   = "cross_q"     if has_gt else "surround_q"
+    overlay_var = "overlay_q" if has_gt else "enhancement_q"
+    cross_var = "cross_q" if has_gt else "surround_q"
 
     if has_gt:
-        ncr_cc = mask_stats.get('NCR_volume_cc', 0)
-        ed_cc  = mask_stats.get('ED_volume_cc',  0)
-        et_cc  = mask_stats.get('ET_volume_cc',  0)
+        ncr_cc = mask_stats.get("NCR_volume_cc", 0)
+        ed_cc = mask_stats.get("ED_volume_cc", 0)
+        et_cc = mask_stats.get("ET_volume_cc", 0)
         gt_header = (
-            "GROUND TRUTH  (from segmentation mask — verify findings against this)\n"
-            f"{gt_block}"
+            f"GROUND TRUTH  (from segmentation mask — verify findings against this)\n{gt_block}"
         )
         step2_a_code = (
             f"  {overlay_var} = llm_query_with_images("
@@ -450,8 +453,8 @@ def run_segmentation_grounded_analysis(
             f"NCR ({ncr_cc:.2f}cc GT), ED ({ed_cc:.2f}cc GT), ET ({et_cc:.2f}cc GT)"
         )
         overlay_label = "Colour overlay (GT seg)"
-        cross_label   = "T1c + T2-FLAIR cross-check"
-        final_section_label   = "AGREEMENT"
+        cross_label = "T1c + T2-FLAIR cross-check"
+        final_section_label = "AGREEMENT"
         final_section_content = "visual observations vs GT volumes — match or discrepancy"
     else:
         gt_header = (
@@ -471,8 +474,8 @@ def run_segmentation_grounded_analysis(
             "NCR (visual inference), ED (visual inference), ET (visual inference)"
         )
         overlay_label = "T1c vs T1n enhancement"
-        cross_label   = "T1c + T2-FLAIR"
-        final_section_label   = "CONFIDENCE"
+        cross_label = "T1c + T2-FLAIR"
+        final_section_label = "CONFIDENCE"
         final_section_content = "high/medium/low per sub-region, strongest evidence modality"
 
     prompt = f"""\
@@ -528,10 +531,10 @@ Write ONE REPL block with these exact steps:
   FINAL_VAR("report")\
 """
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"SEGMENTATION-GROUNDED ANALYSIS — {patient_id}")
     print(f"Ground truth:\n{gt_block}")
-    print(f"{'='*80}\n")
+    print(f"{'=' * 80}\n")
 
     result = rvlm.completion(
         prompt=prompt,
@@ -542,7 +545,7 @@ Write ONE REPL block with these exact steps:
         ),
     )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"RESULT:\n{result.response}")
     print(f"\nTime: {result.execution_time:.2f}s")
     print(f"Usage: {result.usage_summary.to_dict()}")
@@ -627,9 +630,9 @@ Step 5  Comparative summary with clinical implications.
 Call FINAL() with the comparative report.\
 """
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"PATIENT COMPARISON — {pid1}  vs  {pid2}")
-    print(f"{'='*80}\n")
+    print(f"{'=' * 80}\n")
 
     result = rvlm.completion(
         prompt=prompt,
@@ -637,7 +640,7 @@ Call FINAL() with the comparative report.\
         root_prompt=f"Compare meningioma sub-regions and burden: {pid1} vs {pid2}",
     )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"RESULT:\n{result.response}")
     print(f"\nTime: {result.execution_time:.2f}s")
     print(f"Usage: {result.usage_summary.to_dict()}")
@@ -648,32 +651,41 @@ Call FINAL() with the comparative report.\
 # Entry point
 # ---------------------------------------------------------------------------
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="BraTS 2023 Meningioma Sub-region Characterization with RVLM"
     )
     parser.add_argument(
-        "--patient", default=None,
+        "--patient",
+        default=None,
         help="Patient ID (e.g. BraTS-MEN-00004-000). Defaults to first in dataset.",
     )
     parser.add_argument(
-        "--patient2", default=None,
+        "--patient2",
+        default=None,
         help="Second patient ID for cross-patient comparison.",
     )
     parser.add_argument(
-        "--slice", type=int, default=None,
+        "--slice",
+        type=int,
+        default=None,
         help="Override axial slice index. Default: auto-detected from seg mask.",
     )
     parser.add_argument(
-        "--max-iterations", type=int, default=12,
+        "--max-iterations",
+        type=int,
+        default=12,
         help="Maximum REPL iterations for RVLM (default: 12).",
     )
     parser.add_argument(
-        "--report", action="store_true",
+        "--report",
+        action="store_true",
         help="Generate a formal LaTeX/PDF report after the RVLM analysis.",
     )
     parser.add_argument(
-        "--report-dir", default="./reports",
+        "--report-dir",
+        default="./reports",
         help="Directory in which to save the PDF report (default: ./reports).",
     )
     args = parser.parse_args()
@@ -705,8 +717,10 @@ def main():
     # This adaptively sets the iteration budget based on tumour complexity
     # (label entropy, volume, sub-region count, tiny-region flag).
     router = RecursionRouter.from_mask_stats(mask_stats, verbose=True)
-    print(f"\n[Router] complexity={router.complexity_score:.2f}"
-          f"  recommended_iters={router.recommended_max_iterations()}")
+    print(
+        f"\n[Router] complexity={router.complexity_score:.2f}"
+        f"  recommended_iters={router.recommended_max_iterations()}"
+    )
 
     rvlm = RVLM(
         backend="gemini",

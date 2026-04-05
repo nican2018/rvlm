@@ -154,6 +154,3 @@ def build_user_prompt(
             prompt += f"\n\nNote: You have {history_count} prior conversation histories available (history_0 through history_{history_count - 1})."
 
     return {"role": "user", "content": prompt}
-
-
-

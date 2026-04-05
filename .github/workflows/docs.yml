@@ -1,9 +1,10 @@
 name: Deploy Docs to GitHub Pages
 
 on:
-  push:
-    branches:
-      - main
+  # Disabled until docs/ site is created
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
 
 permissions:

@@ -22,21 +22,20 @@ from rvlm.core.types import (
 if TYPE_CHECKING:
     from rvlm.router import RecursionRouter
 from rvlm.environments import BaseEnv, SupportsPersistence
-from rvlm.logger import RLMLogger
-from rvlm.utils.parsing import find_final_answer, format_iteration
-from rvlm.utils.prompts import (
-    QueryMetadata,
-    build_rvlm_system_prompt,
-    build_user_prompt,
-)
-
 from rvlm.image_utils import encode_image
+from rvlm.logger import RLMLogger
 from rvlm.prompts import (
     RVLM_SYSTEM_PROMPT,
     build_image_message_content,
     build_user_prompt_with_images,
 )
 from rvlm.types import ImageInput
+from rvlm.utils.parsing import find_final_answer, format_iteration
+from rvlm.utils.prompts import (
+    QueryMetadata,
+    build_rvlm_system_prompt,
+    build_user_prompt,
+)
 
 
 class RVLM(RLM):
@@ -226,17 +225,19 @@ class RVLM(RLM):
                 # If FINAL_VAR was attempted but failed, add error feedback
                 # so the model knows to create the variable first or use FINAL().
                 if re.search(r"FINAL_VAR\(", iteration.response):
-                    message_history.append({
-                        "role": "user",
-                        "content": (
-                            "ERROR: Your FINAL_VAR() call failed because the variable "
-                            "does not exist in the REPL environment. You MUST first "
-                            "create and assign the variable in a ```repl``` code block, "
-                            "then call FINAL_VAR(variable_name) in a SEPARATE step. "
-                            "Alternatively, use FINAL(your answer text here) to provide "
-                            "the answer directly without needing a variable."
-                        ),
-                    })
+                    message_history.append(
+                        {
+                            "role": "user",
+                            "content": (
+                                "ERROR: Your FINAL_VAR() call failed because the variable "
+                                "does not exist in the REPL environment. You MUST first "
+                                "create and assign the variable in a ```repl``` code block, "
+                                "then call FINAL_VAR(variable_name) in a SEPARATE step. "
+                                "Alternatively, use FINAL(your answer text here) to provide "
+                                "the answer directly without needing a variable."
+                            ),
+                        }
+                    )
 
                 # Router-based early termination (stall detection).
                 if self.router is not None:
@@ -246,9 +247,7 @@ class RVLM(RLM):
                         final_answer = self._default_answer(message_history, lm_handler)
                         usage = lm_handler.get_usage_summary()
                         self.verbose.print_final_answer(final_answer)
-                        self.verbose.print_summary(
-                            i + 1, time_end - time_start, usage.to_dict()
-                        )
+                        self.verbose.print_summary(i + 1, time_end - time_start, usage.to_dict())
                         if self.persistent and isinstance(environment, SupportsPersistence):
                             environment.add_history(message_history)
                         return RLMChatCompletion(
@@ -301,9 +300,7 @@ class RVLM(RLM):
 
         return message_history
 
-    def _inject_image_support(
-        self, environment: BaseEnv, images: list[ImageInput]
-    ) -> None:
+    def _inject_image_support(self, environment: BaseEnv, images: list[ImageInput]) -> None:
         """Inject image data and vision utility functions into the REPL environment."""
         image_data = [img.to_dict() for img in images]
         environment.locals["context_images"] = image_data
@@ -428,4 +425,3 @@ class RVLM(RLM):
             usage_summary=client.get_usage_summary(),
             execution_time=execution_time,
         )
-

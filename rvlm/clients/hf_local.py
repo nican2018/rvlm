@@ -19,12 +19,17 @@ Usage:
     response = client.completion("Describe this image in detail.")
 """
 
+from __future__ import annotations
+
 import base64
 import os
 import ssl
 from collections import defaultdict
 from io import BytesIO
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from PIL import Image
 
 from rvlm.clients.base_lm import BaseLM
 from rvlm.core.types import ModelUsageSummary, UsageSummary
@@ -166,7 +171,9 @@ class HFLocalClient(BaseLM):
         from transformers import AutoProcessor
 
         processor = AutoProcessor.from_pretrained(
-            model_name, token=hf_token, trust_remote_code=trust_remote_code,
+            model_name,
+            token=hf_token,
+            trust_remote_code=trust_remote_code,
         )
 
         if vision:
@@ -313,7 +320,6 @@ class HFLocalClient(BaseLM):
         extra_inputs = {k: inputs[k] for k in extra_keys}
 
         past_key_values = None
-        decode_start = 0
 
         if cache.kv.has_prefix:
             # Restore the KV-cache for the shared prefix
@@ -421,7 +427,6 @@ class HFLocalClient(BaseLM):
             (messages, pil_images) — messages have {"type": "image"} placeholders
             in the order matching pil_images.
         """
-        from PIL import Image
 
         pil_images: list[Image.Image] = []
 
@@ -459,7 +464,7 @@ class HFLocalClient(BaseLM):
         return hf_messages, pil_images
 
     @staticmethod
-    def _load_image(source: str) -> "Image.Image":
+    def _load_image(source: str) -> Image.Image:
         """Load a PIL Image from a data-URI, HTTP URL, or local file path."""
         from PIL import Image
 

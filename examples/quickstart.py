@@ -25,6 +25,3 @@ rvlm = RLM(
 result = rvlm.completion("Print me the first 5 powers of two, each on a newline.")
 
 print(result)
-
-
-

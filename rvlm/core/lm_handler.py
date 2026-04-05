@@ -223,6 +223,3 @@ class LMHandler:
             client_summary = client.get_usage_summary()
             merged.update(client_summary.model_usage_summaries)
         return UsageSummary(model_usage_summaries=merged)
-
-
-

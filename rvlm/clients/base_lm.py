@@ -31,6 +31,3 @@ class BaseLM(ABC):
     def get_last_usage(self) -> ModelUsageSummary:
         """Get the last cost summary of the model."""
         raise NotImplementedError
-
-
-

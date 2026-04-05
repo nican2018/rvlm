@@ -48,6 +48,7 @@ class EvaluationResult:
 # Text normalization
 # ---------------------------------------------------------------------------
 
+
 def _normalize(text: str) -> str:
     """Lowercase, strip punctuation, collapse whitespace."""
     text = text.lower().strip()
@@ -68,6 +69,7 @@ def _get_ngrams(tokens: list[str], n: int) -> Counter:
 # Exact Match
 # ---------------------------------------------------------------------------
 
+
 def compute_exact_match(prediction: str, reference: str) -> float:
     """Binary exact match after normalization. Returns 1.0 or 0.0."""
     return 1.0 if _normalize(prediction) == _normalize(reference) else 0.0
@@ -76,6 +78,7 @@ def compute_exact_match(prediction: str, reference: str) -> float:
 # ---------------------------------------------------------------------------
 # Token-level F1
 # ---------------------------------------------------------------------------
+
 
 def compute_f1(prediction: str, reference: str) -> float:
     """Token-level F1 score between prediction and reference."""
@@ -101,6 +104,7 @@ def compute_f1(prediction: str, reference: str) -> float:
 # ---------------------------------------------------------------------------
 # BLEU (up to 4-gram, with brevity penalty)
 # ---------------------------------------------------------------------------
+
 
 def compute_bleu(prediction: str, reference: str, max_n: int = 4) -> float:
     """Corpus-level BLEU score (single reference). Returns float in [0, 1]."""
@@ -132,7 +136,11 @@ def compute_bleu(prediction: str, reference: str, max_n: int = 4) -> float:
     log_avg = sum(math.log(p) for p in precisions) / len(precisions)
 
     # Brevity penalty
-    bp = 1.0 if len(pred_tokens) >= len(ref_tokens) else math.exp(1 - len(ref_tokens) / len(pred_tokens))
+    bp = (
+        1.0
+        if len(pred_tokens) >= len(ref_tokens)
+        else math.exp(1 - len(ref_tokens) / len(pred_tokens))
+    )
 
     return bp * math.exp(log_avg)
 
@@ -140,6 +148,7 @@ def compute_bleu(prediction: str, reference: str, max_n: int = 4) -> float:
 # ---------------------------------------------------------------------------
 # ROUGE (1, 2, L)
 # ---------------------------------------------------------------------------
+
 
 def _rouge_n(prediction: str, reference: str, n: int) -> float:
     """ROUGE-N F1 score."""
@@ -215,6 +224,7 @@ def compute_rouge(prediction: str, reference: str) -> dict[str, float]:
 # Cosine Similarity (bag-of-words TF)
 # ---------------------------------------------------------------------------
 
+
 def compute_cosine_similarity(prediction: str, reference: str) -> float:
     """Bag-of-words cosine similarity using term frequencies."""
     pred_tokens = Counter(_tokenize(prediction))
@@ -225,8 +235,8 @@ def compute_cosine_similarity(prediction: str, reference: str) -> float:
 
     all_words = set(pred_tokens) | set(ref_tokens)
     dot = sum(pred_tokens.get(w, 0) * ref_tokens.get(w, 0) for w in all_words)
-    mag_pred = math.sqrt(sum(v ** 2 for v in pred_tokens.values()))
-    mag_ref = math.sqrt(sum(v ** 2 for v in ref_tokens.values()))
+    mag_pred = math.sqrt(sum(v**2 for v in pred_tokens.values()))
+    mag_ref = math.sqrt(sum(v**2 for v in ref_tokens.values()))
 
     if mag_pred == 0 or mag_ref == 0:
         return 0.0
@@ -237,7 +247,10 @@ def compute_cosine_similarity(prediction: str, reference: str) -> float:
 # Semantic Similarity (optional, requires sentence-transformers)
 # ---------------------------------------------------------------------------
 
-def compute_semantic_similarity(prediction: str, reference: str, model_name: str = "all-MiniLM-L6-v2") -> float:
+
+def compute_semantic_similarity(
+    prediction: str, reference: str, model_name: str = "all-MiniLM-L6-v2"
+) -> float:
     """Cosine similarity of sentence embeddings.
 
     Requires `pip install sentence-transformers`. Returns 0.0 if not installed.
@@ -250,9 +263,9 @@ def compute_semantic_similarity(prediction: str, reference: str, model_name: str
     model = SentenceTransformer(model_name)
     embeddings = model.encode([prediction, reference], convert_to_numpy=True)
 
-    dot = float(sum(a * b for a, b in zip(embeddings[0], embeddings[1])))
-    mag_a = math.sqrt(float(sum(x ** 2 for x in embeddings[0])))
-    mag_b = math.sqrt(float(sum(x ** 2 for x in embeddings[1])))
+    dot = float(sum(a * b for a, b in zip(embeddings[0], embeddings[1], strict=True)))
+    mag_a = math.sqrt(float(sum(x**2 for x in embeddings[0])))
+    mag_b = math.sqrt(float(sum(x**2 for x in embeddings[1])))
 
     if mag_a == 0 or mag_b == 0:
         return 0.0
@@ -263,6 +276,7 @@ def compute_semantic_similarity(prediction: str, reference: str, model_name: str
 # ---------------------------------------------------------------------------
 # Unified evaluate()
 # ---------------------------------------------------------------------------
+
 
 def evaluate(
     prediction: str,
@@ -313,6 +327,7 @@ def evaluate(
 # Batch evaluation
 # ---------------------------------------------------------------------------
 
+
 def evaluate_batch(
     predictions: list[str],
     references: list[str],
@@ -333,7 +348,9 @@ def evaluate_batch(
             f"predictions ({len(predictions)}) and references ({len(references)}) must have the same length"
         )
 
-    results = [evaluate(pred, ref, metrics) for pred, ref in zip(predictions, references)]
+    results = [
+        evaluate(pred, ref, metrics) for pred, ref in zip(predictions, references, strict=True)
+    ]
 
     # Average across all samples
     if not results:

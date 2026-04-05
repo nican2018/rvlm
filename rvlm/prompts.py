@@ -95,9 +95,7 @@ Think step by step carefully. Execute ONE step at a time in ```repl``` blocks. W
 )
 
 
-def build_image_message_content(
-    text: str, images: list[ImageInput]
-) -> list[dict[str, Any]]:
+def build_image_message_content(text: str, images: list[ImageInput]) -> list[dict[str, Any]]:
     """Build multimodal content array for OpenAI-compatible APIs.
 
     Args:
@@ -110,18 +108,22 @@ def build_image_message_content(
     content: list[dict[str, Any]] = [{"type": "text", "text": text}]
     for img in images:
         if img.media_type == "url":
-            content.append({
-                "type": "image_url",
-                "image_url": {"url": img.data, "detail": img.detail},
-            })
+            content.append(
+                {
+                    "type": "image_url",
+                    "image_url": {"url": img.data, "detail": img.detail},
+                }
+            )
         else:
-            content.append({
-                "type": "image_url",
-                "image_url": {
-                    "url": f"data:{img.media_type};base64,{img.data}",
-                    "detail": img.detail,
-                },
-            })
+            content.append(
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:{img.media_type};base64,{img.data}",
+                        "detail": img.detail,
+                    },
+                }
+            )
     return content
 
 
@@ -188,6 +190,3 @@ def build_user_prompt_with_images(
     # Build multimodal content with images
     content = build_image_message_content(prompt_text, images)
     return {"role": "user", "content": content}
-
-
-

@@ -345,6 +345,3 @@ class DockerREPL(NonIsolatedEnv):
 
     def __del__(self):
         self.cleanup()
-
-
-

@@ -510,6 +510,3 @@ class ModalREPL(IsolatedEnv):
 
     def __del__(self):
         self.cleanup()
-
-
-

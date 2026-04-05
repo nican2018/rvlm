@@ -20,12 +20,9 @@ EnvironmentType = Literal["local", "docker", "modal", "prime", "daytona"]
 
 # Regex patterns to detect base64 image data in prompts/logs
 BASE64_DATA_URI_PATTERN = re.compile(
-    r'data:image/[a-zA-Z0-9+.-]+;base64,[A-Za-z0-9+/=]{100,}',
-    re.IGNORECASE
+    r"data:image/[a-zA-Z0-9+.-]+;base64,[A-Za-z0-9+/=]{100,}", re.IGNORECASE
 )
-LONG_BASE64_PATTERN = re.compile(
-    r'[A-Za-z0-9+/=]{500,}'
-)
+LONG_BASE64_PATTERN = re.compile(r"[A-Za-z0-9+/=]{500,}")
 
 
 def sanitize_base64_in_value(value: Any) -> Any:
@@ -302,6 +299,3 @@ class QueryMetadata:
             raise ValueError(f"Invalid prompt type: {type(prompt)}")
 
         self.context_total_length = sum(self.context_lengths)
-
-
-

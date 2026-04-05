@@ -402,6 +402,3 @@ class LocalREPL(NonIsolatedEnv):
 
     def __del__(self):
         self.cleanup()
-
-
-

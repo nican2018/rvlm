@@ -28,6 +28,3 @@ rvlm = RLM(
 
 result = rvlm.completion("Using your code, solve 2^(2^(2^(2))). Show your work in Python.")
 print(result.response)
-
-
-

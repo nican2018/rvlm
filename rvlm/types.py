@@ -29,6 +29,3 @@ class ImageInput:
             media_type=data.get("media_type", "image/jpeg"),
             detail=data.get("detail", "auto"),
         )
-
-
-

@@ -8,8 +8,6 @@ Requires:
     - GEMINI_API_KEY (or OPENAI_API_KEY) environment variable set in .env
 """
 
-import os
-
 from dotenv import load_dotenv
 
 from rvlm import RVLM
@@ -34,7 +32,9 @@ rvlm = RVLM(
 # Example 1: Analyze an image from a URL
 result = rvlm.completion(
     prompt="Describe what you see in this image and identify any text present.",
-    images=["https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/320px-Camponotus_flavomarginatus_ant.jpg"],
+    images=[
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camponotus_flavomarginatus_ant.jpg/320px-Camponotus_flavomarginatus_ant.jpg"
+    ],
 )
 print(f"Result: {result.response}")
 print(f"Execution time: {result.execution_time:.2f}s")
@@ -53,6 +53,3 @@ print(f"Usage: {result.usage_summary.to_dict()}")
 #     prompt="What is 2 + 2?",
 # )
 # print(f"Text-only result: {result_text.response}")
-
-
-

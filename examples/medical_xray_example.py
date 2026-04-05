@@ -99,15 +99,20 @@ def run_comparison_analysis(rvlm: RVLM, image_paths: list[str]):
 def main():
     parser = argparse.ArgumentParser(description="Medical Image Analysis with RVLM")
     parser.add_argument(
-        "--images", nargs="+",
+        "--images",
+        nargs="+",
         help="Paths or URLs to medical images. Defaults to sample chest X-rays.",
     )
     parser.add_argument(
-        "--mode", choices=["single", "compare", "both"], default="compare",
+        "--mode",
+        choices=["single", "compare", "both"],
+        default="compare",
         help="Analysis mode: single scan, comparison, or both.",
     )
     parser.add_argument(
-        "--max-iterations", type=int, default=8,
+        "--max-iterations",
+        type=int,
+        default=8,
         help="Max REPL iterations (default: 8, increase for deeper analysis).",
     )
     args = parser.parse_args()
@@ -144,6 +149,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-

@@ -102,9 +102,6 @@ def format_iteration(
     return messages
 
 
-
-
-
 def format_execution_result(result: REPLResult) -> str:
     """
     Format the execution result as a string for display.
@@ -169,6 +166,3 @@ def convert_context_for_repl(context):
         context_str = None
 
     return context_data, context_str
-
-
-

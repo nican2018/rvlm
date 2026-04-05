@@ -71,6 +71,7 @@ SAMPLE_IMAGE_URL = "https://upload.wikimedia.org/wikipedia/commons/2/20/Pneumoth
 #  BraTS NIfTI → PNG helpers (mirrors brats_example.py)               #
 # ------------------------------------------------------------------ #
 
+
 def _first_patient_dir() -> Path | None:
     """Return the first available BraTS patient directory, or None."""
     if not DATA_DIR.exists():
@@ -81,8 +82,8 @@ def _first_patient_dir() -> Path | None:
 
 def _nifti_to_png(nifti_path: str, slice_idx: int, output_path: str | None = None) -> str:
     """Convert one axial slice of a NIfTI volume to a grayscale PNG."""
-    import numpy as np
     import nibabel as nib
+    import numpy as np
     from PIL import Image as PILImage
 
     data = np.asarray(nib.load(nifti_path).dataobj, dtype=np.float32)
@@ -100,8 +101,8 @@ def _nifti_to_png(nifti_path: str, slice_idx: int, output_path: str | None = Non
 
 def _get_peak_tumor_slice(seg_path: str) -> int:
     """Return the axial slice with the largest tumour cross-section."""
-    import numpy as np
     import nibabel as nib
+    import numpy as np
 
     mask = np.asarray(nib.load(seg_path).dataobj, dtype=np.uint8)
     per_slice = (mask > 0).sum(axis=(0, 1))
@@ -143,12 +144,14 @@ def prepare_brats_images(patient_id: str | None = None) -> tuple[list[str], dict
         # Compute mask stats for the router (same as brats_example.compute_mask_stats)
         try:
             from examples.brats_example import compute_mask_stats
+
             mask_stats = compute_mask_stats(str(seg_path))
             mask_stats["slice_idx"] = slice_idx
         except ImportError:
             pass
     elif t1c_path.exists():
         import nibabel as nib
+
         slice_idx = nib.load(str(t1c_path)).shape[2] // 2
         print(f"  Slice: {slice_idx} (middle slice fallback)")
     else:
@@ -223,9 +226,7 @@ def run_single_pass(args: argparse.Namespace, images: list[str]) -> str:
     content: list[dict[str, Any]] = [{"type": "text", "text": prompt_text}]
     for img_src in images:
         if img_src.startswith(("http://", "https://")):
-            content.append(
-                {"type": "image_url", "image_url": {"url": img_src, "detail": "auto"}}
-            )
+            content.append({"type": "image_url", "image_url": {"url": img_src, "detail": "auto"}})
         else:
             import base64
 
@@ -276,8 +277,10 @@ def run_rvlm_recursive(
     # the router adapts iterations to tumour complexity; otherwise it uses a
     # neutral prior (complexity=0.5 → 5 iterations recommended).
     router = RecursionRouter.from_mask_stats(mask_stats, verbose=True)
-    print(f"[Router] complexity={router.complexity_score:.2f}"
-          f"  recommended_iters={router.recommended_max_iterations()}")
+    print(
+        f"[Router] complexity={router.complexity_score:.2f}"
+        f"  recommended_iters={router.recommended_max_iterations()}"
+    )
 
     print("\n⏳ Initialising RVLM with local Gemma 4 (model loading may take a minute)...")
     rvlm = RVLM(
@@ -325,7 +328,7 @@ def main() -> None:
         "--image",
         default=None,
         help="Image source: URL, local path, or data URI.  "
-             "If omitted, uses local BraTS data when available.",
+        "If omitted, uses local BraTS data when available.",
     )
     parser.add_argument(
         "--images",
@@ -337,8 +340,8 @@ def main() -> None:
         "--model",
         default="google/gemma-4-26B-A4B-it",
         help="HuggingFace model ID or local path (default: google/gemma-4-26B-A4B-it). "
-             "Options: google/gemma-4-E2B-it (5B), google/gemma-4-E4B-it (8B), "
-             "google/gemma-4-26B-A4B-it (27B MoE), google/gemma-4-31B-it (33B).",
+        "Options: google/gemma-4-E2B-it (5B), google/gemma-4-E4B-it (8B), "
+        "google/gemma-4-26B-A4B-it (27B MoE), google/gemma-4-31B-it (33B).",
     )
     parser.add_argument(
         "--max-new-tokens",
@@ -399,13 +402,13 @@ def main() -> None:
         "--patient",
         default=None,
         help="BraTS patient ID to use with --use-brats (e.g. BraTS-MEN-00004-000). "
-             "If omitted, uses the first available patient.",
+        "If omitted, uses the first available patient.",
     )
     parser.add_argument(
         "--disable-ssl",
         action="store_true",
         help="Disable SSL verification for HuggingFace Hub downloads "
-             "(use when behind a corporate proxy or self-signed cert).",
+        "(use when behind a corporate proxy or self-signed cert).",
     )
     parser.add_argument(
         "--report",
@@ -421,14 +424,14 @@ def main() -> None:
         "--no-cache",
         action="store_true",
         help="Disable the inference cache (vision feature cache, KV-prefix "
-             "reuse, and chunked prefill).  Cache is ON by default.",
+        "reuse, and chunked prefill).  Cache is ON by default.",
     )
     parser.add_argument(
         "--prefill-chunk-size",
         type=int,
         default=512,
         help="Max tokens per chunk during prefill (default: 512). "
-             "Lower values reduce peak GPU memory; higher values are faster.",
+        "Lower values reduce peak GPU memory; higher values are faster.",
     )
     args = parser.parse_args()
 

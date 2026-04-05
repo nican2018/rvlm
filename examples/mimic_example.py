@@ -59,30 +59,32 @@ from pathlib import Path
 
 import pandas as pd
 
+from examples.latex_report import CXRLatexReportGenerator
 from rvlm import RVLM
 from rvlm.logger import RLMLogger
-from examples.latex_report import LatexReportGenerator, CXRLatexReportGenerator
 
 load_dotenv = None
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
 except ImportError:
     pass
 
-DATA_DIR   = Path(__file__).parent.parent / "data" / "MIMMIC"
+DATA_DIR = Path(__file__).parent.parent / "data" / "MIMMIC"
 IMAGES_DIR = DATA_DIR / "official_data_iccv_final"
 
 VIEW_LABELS = {
-    "PA":      "Posteroanterior (PA) chest X-ray",
+    "PA": "Posteroanterior (PA) chest X-ray",
     "Lateral": "Lateral chest X-ray",
-    "AP":      "Anteroposterior (AP, portable) chest X-ray",
+    "AP": "Anteroposterior (AP, portable) chest X-ray",
 }
 
 
 # ---------------------------------------------------------------------------
 # Data loading
 # ---------------------------------------------------------------------------
+
 
 def load_csv(split: str = "validate") -> pd.DataFrame:
     """Load the MIMIC-CXR CSV for the requested split."""
@@ -129,7 +131,7 @@ def select_images(row: pd.Series, study_index: int = -1) -> tuple[list[str], lis
     """
     # Group all images by study ID (extracted from path)
     all_paths: list[str] = row["image"]
-    studies: dict[str, list[tuple[str, str]]] = {}   # study_id -> [(path, view_type)]
+    studies: dict[str, list[tuple[str, str]]] = {}  # study_id -> [(path, view_type)]
 
     for path in all_paths:
         # path e.g. "files/p10/p10000032/s50414267/02aa804e-....jpg"
@@ -138,7 +140,7 @@ def select_images(row: pd.Series, study_index: int = -1) -> tuple[list[str], lis
         view = _detect_view(path, row)
         studies.setdefault(study_id, []).append((path, view))
 
-    sorted_studies = sorted(studies.keys())   # alphabetical ≈ chronological (s-prefix)
+    sorted_studies = sorted(studies.keys())  # alphabetical ≈ chronological (s-prefix)
     selected_study_id = sorted_studies[study_index]
     selected_imgs = studies[selected_study_id]
 
@@ -148,7 +150,7 @@ def select_images(row: pd.Series, study_index: int = -1) -> tuple[list[str], lis
 
     # Resolve absolute paths
     image_paths = [str(IMAGES_DIR / p) for p, _ in selected_imgs]
-    view_types  = [v for _, v in selected_imgs]
+    view_types = [v for _, v in selected_imgs]
 
     # Match the GT report: sorted_studies index -> text index
     gt_texts: list[str] = row["text"]
@@ -160,7 +162,6 @@ def select_images(row: pd.Series, study_index: int = -1) -> tuple[list[str], lis
 
 def _detect_view(img_path: str, row: pd.Series) -> str:
     """Return 'PA', 'Lateral', or 'AP' for an image path using the CSV lists."""
-    rel = img_path  # paths in CSV are relative to IMAGES_DIR
     if img_path in (row.get("PA") or []):
         return "PA"
     if img_path in (row.get("Lateral") or []):
@@ -174,49 +175,49 @@ def _detect_view(img_path: str, row: pd.Series) -> str:
 # RVLM prompt builder
 # ---------------------------------------------------------------------------
 
+
 def _build_cxr_prompt(
     subject_id: int,
     image_paths: list[str],
-    view_types:  list[str],
-    gt_report:   str,
+    view_types: list[str],
+    gt_report: str,
 ) -> str:
     """Build the RVLM user prompt for chest X-ray report generation."""
 
     # Image index list for the prompt
     images_block = "\n".join(
-        f"  Image {i}: {VIEW_LABELS.get(v, v)}"
-        for i, v in enumerate(view_types)
+        f"  Image {i}: {VIEW_LABELS.get(v, v)}" for i, v in enumerate(view_types)
     )
 
     # Determine which image indices hold PA and Lateral views
-    pa_idx  = next((i for i, v in enumerate(view_types) if v == "PA"),      None)
+    pa_idx = next((i for i, v in enumerate(view_types) if v == "PA"), None)
     lat_idx = next((i for i, v in enumerate(view_types) if v == "Lateral"), None)
-    ap_idx  = next((i for i, v in enumerate(view_types) if v == "AP"),      None)
+    ap_idx = next((i for i, v in enumerate(view_types) if v == "AP"), None)
 
     # Step 1 — per-view descriptions
     step1_lines: list[str] = []
     if pa_idx is not None:
         step1_lines.append(
             f"  pa_desc = describe_image({pa_idx}, "
-            f"\"PA chest X-ray systematic review: \"\n"
-            f"    \"1) Lung fields — consolidation, opacity, hyperinflation, atelectasis, nodules\\n\"\n"
-            f"    \"2) Cardiomediastinal — heart size (< half thorax?), contour, trachea, hila\\n\"\n"
-            f"    \"3) Pleura — effusion (blunted costophrenic angles?), pneumothorax\\n\"\n"
-            f"    \"4) Bones & soft tissue — rib fractures, calcifications, foreign bodies\\n\"\n"
-            f"    \"5) Diaphragm — elevated? free subdiaphragmatic air?\")"
+            f'"PA chest X-ray systematic review: "\n'
+            f'    "1) Lung fields — consolidation, opacity, hyperinflation, atelectasis, nodules\\n"\n'
+            f'    "2) Cardiomediastinal — heart size (< half thorax?), contour, trachea, hila\\n"\n'
+            f'    "3) Pleura — effusion (blunted costophrenic angles?), pneumothorax\\n"\n'
+            f'    "4) Bones & soft tissue — rib fractures, calcifications, foreign bodies\\n"\n'
+            f'    "5) Diaphragm — elevated? free subdiaphragmatic air?")'
         )
     if lat_idx is not None:
         step1_lines.append(
             f"  lat_desc = describe_image({lat_idx}, "
-            f"\"Lateral chest X-ray: retrosternal space (clear/filled?), \"\n"
-            f"    \"retrocardiac opacity, posterior costophrenic angles, \"\n"
-            f"    \"vertebral column density gradient (should get darker inferiorly).\")"
+            f'"Lateral chest X-ray: retrosternal space (clear/filled?), "\n'
+            f'    "retrocardiac opacity, posterior costophrenic angles, "\n'
+            f'    "vertebral column density gradient (should get darker inferiorly).")'
         )
     if ap_idx is not None and pa_idx is None:
         step1_lines.append(
             f"  pa_desc = describe_image({ap_idx}, "
-            f"\"AP portable chest X-ray (note: AP view magnifies cardiac shadow): \"\n"
-            f"    \"lung fields, cardiac size, pleural spaces, support devices.\")"
+            f'"AP portable chest X-ray (note: AP view magnifies cardiac shadow): "\n'
+            f'    "lung fields, cardiac size, pleural spaces, support devices.")'
         )
     step1_code = "\n".join(step1_lines)
 
@@ -225,9 +226,9 @@ def _build_cxr_prompt(
     cross_indices_str = str(cross_indices)
     step2_code = (
         f"  cross_q = llm_query_with_images(\n"
-        f"    \"Cross-view assessment: Is the cardiac silhouette enlarged? \"\n"
-        f"    \"Is there consolidation (unilateral or bilateral)? \"\n"
-        f"    \"Pleural effusion present? Pneumothorax? Pulmonary oedema?\",\n"
+        f'    "Cross-view assessment: Is the cardiac silhouette enlarged? "\n'
+        f'    "Is there consolidation (unilateral or bilateral)? "\n'
+        f'    "Pleural effusion present? Pneumothorax? Pulmonary oedema?",\n'
         f"    {cross_indices_str})"
     )
 
@@ -241,23 +242,23 @@ def _build_cxr_prompt(
     if lat_idx is not None:
         evidence_code = (
             "  evidence = (\n"
-            "      f\"PA view: {pa_desc[:400]}\\n\"\n"
-            "      f\"Lateral view: {lat_desc[:400]}\\n\"\n"
-            "      f\"Cross-view: {cross_q[:400]}\"\n"
+            '      f"PA view: {pa_desc[:400]}\\n"\n'
+            '      f"Lateral view: {lat_desc[:400]}\\n"\n'
+            '      f"Cross-view: {cross_q[:400]}"\n'
             "  )"
         )
     elif ap_idx is not None and pa_idx is None:
         evidence_code = (
             "  evidence = (\n"
-            "      f\"AP view: {pa_desc[:400]}\\n\"\n"
-            "      f\"Cross-view: {cross_q[:400]}\"\n"
+            '      f"AP view: {pa_desc[:400]}\\n"\n'
+            '      f"Cross-view: {cross_q[:400]}"\n'
             "  )"
         )
     else:
         evidence_code = (
             "  evidence = (\n"
-            "      f\"PA view: {pa_desc[:400]}\\n\"\n"
-            "      f\"Cross-view: {cross_q[:400]}\"\n"
+            '      f"PA view: {pa_desc[:400]}\\n"\n'
+            '      f"Cross-view: {cross_q[:400]}"\n'
             "  )"
         )
 
@@ -312,32 +313,32 @@ Write ONE REPL block with these exact steps:
 # Main analysis function
 # ---------------------------------------------------------------------------
 
+
 def run_cxr_analysis(
     rvlm: RVLM,
     subject_id: int,
     image_paths: list[str],
-    view_types:  list[str],
-    gt_report:   str,
+    view_types: list[str],
+    gt_report: str,
 ):
     """Run RVLM chest X-ray analysis for one patient study."""
     prompt = _build_cxr_prompt(subject_id, image_paths, view_types, gt_report)
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"CXR ANALYSIS — subject {subject_id}")
     print(f"Views: {view_types}")
-    print(f"Ground truth (truncated):\n  {gt_report[:300].replace(chr(10), chr(10)+'  ')}")
-    print(f"{'='*80}\n")
+    print(f"Ground truth (truncated):\n  {gt_report[:300].replace(chr(10), chr(10) + '  ')}")
+    print(f"{'=' * 80}\n")
 
     result = rvlm.completion(
         prompt=prompt,
         images=image_paths,
         root_prompt=(
-            f"Generate a structured chest X-ray radiology report for "
-            f"MIMIC subject {subject_id}."
+            f"Generate a structured chest X-ray radiology report for MIMIC subject {subject_id}."
         ),
     )
 
-    print(f"\n{'='*80}")
+    print(f"\n{'=' * 80}")
     print(f"GENERATED REPORT:\n{result.response}")
     print(f"\nTime: {result.execution_time:.2f}s")
     print(f"Usage: {result.usage_summary.to_dict()}")
@@ -348,32 +349,43 @@ def run_cxr_analysis(
 # Entry point
 # ---------------------------------------------------------------------------
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="MIMIC-CXR Chest X-Ray Report Generation with RVLM"
     )
     parser.add_argument(
-        "--subject", type=int, default=None,
+        "--subject",
+        type=int,
+        default=None,
         help="Patient subject_id. Defaults to first in the split.",
     )
     parser.add_argument(
-        "--split", default="validate", choices=["train", "validate"],
+        "--split",
+        default="validate",
+        choices=["train", "validate"],
         help="CSV split to use (default: validate).",
     )
     parser.add_argument(
-        "--study-index", type=int, default=-1,
+        "--study-index",
+        type=int,
+        default=-1,
         help="Which study to use: -1=most recent (default), 0=earliest.",
     )
     parser.add_argument(
-        "--max-iterations", type=int, default=4,
+        "--max-iterations",
+        type=int,
+        default=4,
         help="Maximum REPL iterations for RVLM (default: 4).",
     )
     parser.add_argument(
-        "--report", action="store_true",
+        "--report",
+        action="store_true",
         help="Generate a formal LaTeX/PDF report after the analysis.",
     )
     parser.add_argument(
-        "--report-dir", default="./reports",
+        "--report-dir",
+        default="./reports",
         help="Directory in which to save the PDF report (default: ./reports).",
     )
     args = parser.parse_args()
@@ -394,7 +406,7 @@ def main():
 
     print(f"Subject  : {args.subject}")
     print(f"Images   : {len(image_paths)} ({', '.join(view_types)})")
-    for i, (p, v) in enumerate(zip(image_paths, view_types)):
+    for i, (p, v) in enumerate(zip(image_paths, view_types, strict=False)):
         print(f"  Image {i}: [{v}] {p}")
 
     logger = RLMLogger(log_dir="./logs/mimic")

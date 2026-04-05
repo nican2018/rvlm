@@ -61,6 +61,3 @@ class RLMLogger:
     @property
     def iteration_count(self) -> int:
         return self._iteration_count
-
-
-

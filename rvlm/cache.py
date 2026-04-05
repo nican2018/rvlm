@@ -24,7 +24,6 @@ All three components are opt-in and backward-compatible: setting
 from __future__ import annotations
 
 import hashlib
-import time
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -165,9 +164,7 @@ class KVCacheManager:
         cloned_layers = []
         for layer_kv in past_key_values:
             k, v = layer_kv
-            cloned_layers.append(
-                (k[:, :, :max_len, :].clone(), v[:, :, :max_len, :].clone())
-            )
+            cloned_layers.append((k[:, :, :max_len, :].clone(), v[:, :, :max_len, :].clone()))
         return tuple(cloned_layers)
 
 
@@ -240,7 +237,7 @@ def chunked_prefill(
 
         # Full attention mask up to current position
         if attention_mask is not None:
-            fwd_kwargs["attention_mask"] = attention_mask[:, : end]
+            fwd_kwargs["attention_mask"] = attention_mask[:, :end]
 
         # Vision inputs only in the first chunk
         if start == 0 and pixel_values is not None:

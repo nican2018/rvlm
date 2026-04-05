@@ -67,6 +67,3 @@ def get_client(
         raise ValueError(
             f"Unknown backend: {backend}. Supported backends: ['openai', 'vllm', 'portkey', 'openrouter', 'litellm', 'anthropic', 'azure_openai', 'gemini', 'hf_local', 'vercel']"
         )
-
-
-

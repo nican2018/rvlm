@@ -136,7 +136,7 @@ class RecursionRouter:
         cls,
         mask_stats: dict[str, Any] | None,
         verbose: bool = False,
-    ) -> "RecursionRouter":
+    ) -> RecursionRouter:
         """
         Build a router from segmentation mask statistics.
 
@@ -163,7 +163,7 @@ class RecursionRouter:
     def should_continue(
         self,
         iteration_num: int,
-        rlm_iteration: "RLMIteration",
+        rlm_iteration: RLMIteration,
         repl_locals: dict[str, Any],
     ) -> bool:
         """
@@ -191,7 +191,9 @@ class RecursionRouter:
         # 3. Terminate if stalling beyond the recommended budget.
         if self._stall_count >= 2 and iteration_num >= self._recommended - 1:
             decision = False
-            reason = f"stall_count={self._stall_count} at iter {iteration_num + 1}/{self._recommended}"
+            reason = (
+                f"stall_count={self._stall_count} at iter {iteration_num + 1}/{self._recommended}"
+            )
             self._log(iteration_num, decision, reason)
             return decision
 
@@ -204,7 +206,7 @@ class RecursionRouter:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _is_productive(self, rlm_iteration: "RLMIteration") -> bool:
+    def _is_productive(self, rlm_iteration: RLMIteration) -> bool:
         """Return True if this iteration made meaningful progress."""
         for cb in rlm_iteration.code_blocks:
             result = cb.result
@@ -216,8 +218,7 @@ class RecursionRouter:
                 return True
             # New locals beyond trivial helper variables
             non_trivial = {
-                k: v for k, v in result.locals.items()
-                if not k.startswith("_") and not callable(v)
+                k: v for k, v in result.locals.items() if not k.startswith("_") and not callable(v)
             }
             if non_trivial:
                 return True

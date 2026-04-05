@@ -36,6 +36,3 @@ def get_environment(
         raise ValueError(
             f"Unknown environment: {environment}. Supported: ['local', 'modal', 'docker', 'daytona', 'prime']"
         )
-
-
-
