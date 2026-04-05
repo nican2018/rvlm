@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <img src="media/teaser.png" alt="RVLM overview" width="720"/>
+  <img src="media/rvlm_overview.png" alt="RVLM overview" width="720"/>
 </p>
 
 ---
