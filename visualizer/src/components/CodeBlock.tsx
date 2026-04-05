@@ -138,12 +138,12 @@ export function CodeBlock({ block, index }: CodeBlockProps) {
               </div>
             )}
 
-            {/* Sub-LM Calls */}
+            {/* Sub-VLM Calls */}
             {block.result?.rlm_calls && block.result.rlm_calls.length > 0 && (
               <div className="border-t border-border bg-fuchsia-500/5 dark:bg-fuchsia-400/5">
                 <div className="px-3 py-1.5 border-b border-border/50 flex items-center gap-2">
                   <span className="text-[10px] uppercase tracking-wider text-fuchsia-600 dark:text-fuchsia-400 font-medium">
-                    Sub-LM Calls ({block.result.rlm_calls.length})
+                    Sub-VLM Calls ({block.result.rlm_calls.length})
                   </span>
                 </div>
                 <div className="p-4 space-y-3">

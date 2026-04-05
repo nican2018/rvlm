@@ -1,4 +1,4 @@
-// Types matching the RLM log format
+// Types matching the RVLM log format
 
 export interface RLMChatCompletion {
   prompt: string | Record<string, unknown>;
@@ -6,6 +6,7 @@ export interface RLMChatCompletion {
   prompt_tokens: number;
   completion_tokens: number;
   execution_time: number;
+  root_model?: string;
 }
 
 export interface REPLResult {
@@ -32,7 +33,7 @@ export interface RLMIteration {
   iteration_time: number | null;
 }
 
-// Metadata saved at the start of a log file about RLM configuration
+// Metadata saved at the start of a log file about RVLM configuration
 export interface RLMConfigMetadata {
   root_model: string | null;
   max_depth: number | null;

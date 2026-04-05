@@ -1,4 +1,4 @@
-Vibe-coded visualizer with [shadcn](https://ui.shadcn.com) for viewing RLM trajectories.
+RVLM Trajectory Visualizer built with [shadcn](https://ui.shadcn.com) for viewing Recursive Vision Language Model execution traces.
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 

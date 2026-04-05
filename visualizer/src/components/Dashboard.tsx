@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FileUploader } from './FileUploader';
 import { LogViewer } from './LogViewer';
-import { AsciiRLM } from './AsciiGlobe';
+import { AsciiRVLM } from './AsciiGlobe';
 import { ThemeToggle } from './ThemeToggle';
 import { parseLogFile, extractContextVariable } from '@/lib/parse-logs';
 import { RLMLogFile } from '@/lib/types';
@@ -114,11 +114,11 @@ export function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold tracking-tight">
-                  <span className="text-primary">RLM</span>
+                  <span className="text-primary">RVLM</span>
                   <span className="text-muted-foreground ml-2 font-normal">Visualizer</span>
                 </h1>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Debug recursive language model execution traces
+                  Debug recursive vision language model execution traces
                 </p>
               </div>
               <div className="flex items-center gap-4">
@@ -152,10 +152,10 @@ export function Dashboard() {
               <div className="hidden lg:block">
                 <h2 className="text-sm font-medium mb-3 flex items-center gap-2 text-muted-foreground">
                   <span className="text-primary font-mono">◈</span>
-                  RLM Architecture
+                  RVLM Architecture
                 </h2>
                 <div className="bg-muted/50 border border-border rounded-lg p-4 overflow-x-auto">
-                  <AsciiRLM />
+                  <AsciiRVLM />
                 </div>
               </div>
             </div>
@@ -298,10 +298,10 @@ export function Dashboard() {
         <footer className="border-t border-border mt-8">
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
             <p className="text-[10px] text-muted-foreground font-mono">
-              RLM Visualizer • Recursive Language Models
+              RVLM Visualizer • Recursive Vision Language Models
             </p>
             <p className="text-[10px] text-muted-foreground font-mono">
-              Prompt → [LM ↔ REPL] → Answer
+              Images + Prompt → [VLM ↔ REPL] → Answer
             </p>
           </div>
         </footer>

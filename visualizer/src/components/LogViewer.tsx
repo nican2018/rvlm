@@ -128,7 +128,7 @@ export function LogViewer({ logFile, onBack }: LogViewerProps) {
               variant="green"
             />
             <StatsCard
-              label="Sub-LM"
+              label="Sub-VLM"
               value={metadata.totalSubLMCalls}
               icon="◇"
               variant="magenta"
@@ -166,7 +166,7 @@ export function LogViewer({ logFile, onBack }: LogViewerProps) {
 
           <ResizableHandle withHandle className="bg-border hover:bg-primary/30 transition-colors" />
 
-          {/* Right Panel - Code Execution & Sub-LM Calls */}
+          {/* Right Panel - Code Execution & Sub-VLM Calls */}
           <ResizablePanel defaultSize={50} minSize={20} maxSize={80}>
             <div className="h-full bg-background">
               <ExecutionPanel

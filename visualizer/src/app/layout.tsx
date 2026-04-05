@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RLM Visualizer",
-  description: "Visualize and debug Recursive Language Model execution traces",
+  title: "RVLM Visualizer",
+  description: "Visualize and debug Recursive Vision Language Model execution traces",
 };
 
 export default function RootLayout({
@@ -28,6 +28,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"

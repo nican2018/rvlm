@@ -42,7 +42,7 @@ export function ExecutionPanel({ iteration }: ExecutionPanelProps) {
               <span className="text-emerald-500 text-sm">⟨⟩</span>
             </div>
             <div>
-              <h2 className="font-semibold text-sm">Code & Sub-LM Calls</h2>
+              <h2 className="font-semibold text-sm">Code & Sub-VLM Calls</h2>
               <p className="text-[11px] text-muted-foreground">
                 Iteration {iteration.iteration} • {new Date(iteration.timestamp).toLocaleString()}
               </p>
@@ -57,7 +57,7 @@ export function ExecutionPanel({ iteration }: ExecutionPanelProps) {
           </Badge>
           {totalSubCalls > 0 && (
             <Badge className="bg-fuchsia-500/15 text-fuchsia-600 dark:text-fuchsia-400 border-fuchsia-500/30 text-xs">
-              {totalSubCalls} sub-LM call{totalSubCalls !== 1 ? 's' : ''}
+              {totalSubCalls} sub-VLM call{totalSubCalls !== 1 ? 's' : ''}
             </Badge>
           )}
           {iteration.final_answer && (
@@ -68,7 +68,7 @@ export function ExecutionPanel({ iteration }: ExecutionPanelProps) {
         </div>
       </div>
 
-      {/* Tabs - Code Execution and Sub-LM Calls only */}
+      {/* Tabs - Code Execution and Sub-VLM Calls only */}
       <Tabs defaultValue="code" className="flex-1 flex flex-col overflow-hidden">
         <div className="flex-shrink-0 px-4 pt-3">
           <TabsList className="w-full grid grid-cols-2">
@@ -76,7 +76,7 @@ export function ExecutionPanel({ iteration }: ExecutionPanelProps) {
               Code Execution
             </TabsTrigger>
             <TabsTrigger value="sublm" className="text-xs">
-              Sub-LM Calls ({totalSubCalls})
+              Sub-VLM Calls ({totalSubCalls})
             </TabsTrigger>
           </TabsList>
         </div>
@@ -171,10 +171,10 @@ export function ExecutionPanel({ iteration }: ExecutionPanelProps) {
                         <span className="text-xl opacity-50">⊘</span>
                       </div>
                       <p className="text-muted-foreground text-sm">
-                        No sub-LM calls were made in this iteration
+                        No sub-VLM calls were made in this iteration
                       </p>
                       <p className="text-muted-foreground text-xs mt-1">
-                        Sub-LM calls appear when using llm_query() in the REPL
+                        Sub-VLM calls appear when using llm_query() or llm_query_with_images() in the REPL
                       </p>
                     </CardContent>
                   </Card>

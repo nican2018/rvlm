@@ -73,7 +73,7 @@ export function IterationTimeline({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <span className="text-xs font-semibold text-foreground">Recursive Language Model Trajectory</span>
+        <span className="text-xs font-semibold text-foreground">Recursive Vision Language Model Trajectory</span>
         <span className="text-[10px] text-muted-foreground">
           ({iterations.length} total)
         </span>
