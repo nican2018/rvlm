@@ -1,0 +1,402 @@
+\begin{thebibliography}{46}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Singhal et~al.(2022)Singhal, Azizi, Tu, Mahdavi, Wei, Chung, Scales,
+  Tanwani, Cole-Lewis, Pfohl, Payne, Seneviratne, Gamble, Kelly, Scharli,
+  Chowdhery, Mansfield, y~Arcas, Webster, Corrado, Matias, Chou, Gottweis,
+  Tomasev, Liu, Rajkomar, Barral, Semturs, Karthikesalingam, and
+  Natarajan]{singhal2023medpalm}
+Karan Singhal, Shekoofeh Azizi, Tao Tu, S.~Sara Mahdavi, Jason Wei, Hyung~Won
+  Chung, Nathan Scales, Ajay Tanwani, Heather Cole-Lewis, Stephen Pfohl, Perry
+  Payne, Martin Seneviratne, Paul Gamble, Chris Kelly, Nathaneal Scharli,
+  Aakanksha Chowdhery, Philip Mansfield, Blaise~Aguera y~Arcas, Dale Webster,
+  Greg~S. Corrado, Yossi Matias, Katherine Chou, Juraj Gottweis, Nenad Tomasev,
+  Yun Liu, Alvin Rajkomar, Joelle Barral, Christopher Semturs, Alan
+  Karthikesalingam, and Vivek Natarajan.
+\newblock Large language models encode clinical knowledge, 2022.
+\newblock URL \url{https://arxiv.org/abs/2212.13138}.
+
+\bibitem[AJ et~al.(2023)AJ, DSJ, K, L, TF, and DSW]{thirunavukarasu2023large}
+Thirunavukarasu AJ, Ting DSJ, Elangovan K, Gutierrez L, Tan TF, and Ting DSW.
+\newblock Large language models in medicine.
+\newblock \emph{Nat Med}, 29\penalty0 (8):\penalty0 1930--1940, 2023.
+\newblock \doi{10.1038/s41591-023-02448-8}.
+\newblock Epub 2023 Jul 17.
+
+\bibitem[Ghassemi et~al.(2021)Ghassemi, Oakden-Rayner, and
+  Beam]{ghassemi2021clinical}
+Marzyeh Ghassemi, Luke Oakden-Rayner, and Andrew~L. Beam.
+\newblock The false hope of current approaches to explainable artificial
+  intelligence in health care.
+\newblock \emph{The Lancet Digital Health}, 3\penalty0 (11):\penalty0
+  e745--e750, November 2021.
+\newblock \doi{10.1016/S2589-7500(21)00208-9}.
+
+\bibitem[Raji et~al.(2020)Raji, Smart, White, Mitchell, Gebru, Hutchinson,
+  Smith-Loud, Theron, and Barnes]{raji2020closing}
+Inioluwa~Deborah Raji, Andrew Smart, Rebecca~N. White, Margaret Mitchell,
+  Timnit Gebru, Ben Hutchinson, Jamila Smith-Loud, Daniel Theron, and Parker
+  Barnes.
+\newblock Closing the ai accountability gap: Defining an end-to-end framework
+  for internal algorithmic auditing, 2020.
+\newblock URL \url{https://arxiv.org/abs/2001.00973}.
+
+\bibitem[Thieme et~al.(2023)Thieme, Nori, Ghassemi, Bommasani, Andersen, and
+  Luger]{amini2024foundation}
+Anja Thieme, Aditya Nori, Marzyeh Ghassemi, Rishi Bommasani, Tariq~Osman
+  Andersen, and Ewa Luger.
+\newblock Foundation models in healthcare: Opportunities, risks \& strategies
+  forward.
+\newblock In \emph{Extended Abstracts of the 2023 CHI Conference on Human
+  Factors in Computing Systems}, CHI EA '23, New York, NY, USA, 2023.
+  Association for Computing Machinery.
+\newblock ISBN 9781450394222.
+\newblock \doi{10.1145/3544549.3583177}.
+\newblock URL \url{https://doi.org/10.1145/3544549.3583177}.
+
+\bibitem[Zhang et~al.(2026)Zhang, Kraska, and Khattab]{zhang2025rlm}
+Alex~L. Zhang, Tim Kraska, and Omar Khattab.
+\newblock Recursive language models, 2026.
+\newblock URL \url{https://arxiv.org/abs/2512.24601}.
+
+\bibitem[OpenAI(2024)]{openai2024gpt4o}
+OpenAI.
+\newblock Gpt-4o system card, 2024.
+\newblock URL \url{https://openai.com/index/gpt-4o-system-card/}.
+
+\bibitem[Team et~al.(2025)]{team2024gemini}
+Gemini Team et~al.
+\newblock Gemini: A family of highly capable multimodal models, 2025.
+\newblock URL \url{https://arxiv.org/abs/2312.11805}.
+
+\bibitem[Anthropic(2024)]{anthropic2024claude35}
+Anthropic.
+\newblock The claude model family: Claude 3.5, 2024.
+\newblock URL \url{https://www.anthropic.com/news/claude-3-5-sonnet}.
+
+\bibitem[Liu et~al.(2023)Liu, Li, Wu, and Lee]{liu2023llava}
+Haotian Liu, Chunyuan Li, Qingyang Wu, and Yong~Jae Lee.
+\newblock Visual instruction tuning, 2023.
+\newblock URL \url{https://arxiv.org/abs/2304.08485}.
+
+\bibitem[Li et~al.(2024)Li, Zhang, Guo, Zhang, Li, Zhang, Zhang, Zhang, Li,
+  Liu, and Li]{liu2024llavaone}
+Bo~Li, Yuanhan Zhang, Dong Guo, Renrui Zhang, Feng Li, Hao Zhang, Kaichen
+  Zhang, Peiyuan Zhang, Yanwei Li, Ziwei Liu, and Chunyuan Li.
+\newblock Llava-onevision: Easy visual task transfer, 2024.
+\newblock URL \url{https://arxiv.org/abs/2408.03326}.
+
+\bibitem[Zhang et~al.(2024)Zhang, Zhang, Li, Zhao, Karypis, and
+  Smola]{zhang2024cocot}
+Zhuosheng Zhang, Aston Zhang, Mu~Li, Hai Zhao, George Karypis, and Alex Smola.
+\newblock Multimodal chain-of-thought reasoning in language models, 2024.
+\newblock URL \url{https://arxiv.org/abs/2302.00923}.
+
+\bibitem[Shao et~al.(2024)Shao, Qian, Xiao, Song, Zong, Wang, Liu, and
+  Li]{wang2024visualcot}
+Hao Shao, Shengju Qian, Han Xiao, Guanglu Song, Zhuofan Zong, Letian Wang,
+  Yu~Liu, and Hongsheng Li.
+\newblock Visual cot: Advancing multi-modal language models with a
+  comprehensive dataset and benchmark for chain-of-thought reasoning, 2024.
+\newblock URL \url{https://arxiv.org/abs/2403.16999}.
+
+\bibitem[Yao et~al.(2023)Yao, Zhao, Yu, Du, Shafran, Narasimhan, and
+  Cao]{yao2023reactsynergizingreasoningacting}
+Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan,
+  and Yuan Cao.
+\newblock React: Synergizing reasoning and acting in language models, 2023.
+\newblock URL \url{https://arxiv.org/abs/2210.03629}.
+
+\bibitem[Shinn et~al.(2023)Shinn, Cassano, Berman, Gopinath, Narasimhan, and
+  Yao]{shinn2023reflexion}
+Noah Shinn, Federico Cassano, Edward Berman, Ashwin Gopinath, Karthik
+  Narasimhan, and Shunyu Yao.
+\newblock Reflexion: Language agents with verbal reinforcement learning, 2023.
+\newblock URL \url{https://arxiv.org/abs/2303.11366}.
+
+\bibitem[Schroeder et~al.(2025)Schroeder, Morgan, Luo, and
+  Glass]{schroeder2025threadthinkingdeeperrecursive}
+Philip Schroeder, Nathaniel Morgan, Hongyin Luo, and James Glass.
+\newblock Thread: Thinking deeper with recursive spawning, 2025.
+\newblock URL \url{https://arxiv.org/abs/2405.17402}.
+
+\bibitem[Simonds and
+  Yoshiyama(2025)]{simonds2025ladderselfimprovingllmsrecursive}
+Toby Simonds and Akira Yoshiyama.
+\newblock Ladder: Self-improving llms through recursive problem decomposition,
+  2025.
+\newblock URL \url{https://arxiv.org/abs/2503.00735}.
+
+\bibitem[Sur{\'i}s et~al.(2023)Sur{\'i}s, Menon, and
+  Vondrick]{surismenon2023vipergpt}
+D{\'i}dac Sur{\'i}s, Sachit Menon, and Carl Vondrick.
+\newblock Vipergpt: Visual inference via python execution for reasoning.
+\newblock 2023.
+\newblock URL \url{https://arxiv.org/abs/2303.08128}.
+
+\bibitem[Wang et~al.(2024)Wang, Chen, Yuan, Zhang, Li, Peng, and
+  Ji]{wang2024executablecodeactionselicit}
+Xingyao Wang, Yangyi Chen, Lifan Yuan, Yizhe Zhang, Yunzhu Li, Hao Peng, and
+  Heng Ji.
+\newblock Executable code actions elicit better llm agents, 2024.
+\newblock URL \url{https://arxiv.org/abs/2402.01030}.
+
+\bibitem[Shlapentokh-Rothman et~al.(2025)Shlapentokh-Rothman, Wang, and
+  Hoiem]{hu2024visualprogram}
+Michal Shlapentokh-Rothman, Yu-Xiong Wang, and Derek Hoiem.
+\newblock Visual program distillation with template-based augmentation, 2025.
+\newblock URL \url{https://arxiv.org/abs/2412.08564}.
+
+\bibitem[Wang et~al.(2025)Wang, Pan, Wei, Zhou, Shi, Lu, Xiao, Yang, Ren, Zhan,
+  and Li]{chen2025vcoc}
+Ke~Wang, Junting Pan, Linda Wei, Aojun Zhou, Weikang Shi, Zimu Lu, Han Xiao,
+  Yunqiao Yang, Houxing Ren, Mingjie Zhan, and Hongsheng Li.
+\newblock Mathcoder-vl: Bridging vision and code for enhanced multimodal
+  mathematical reasoning, 2025.
+\newblock URL \url{https://arxiv.org/abs/2505.10557}.
+
+\bibitem[Chen et~al.(2022)Chen, Ma, Wang, and Cohen]{chen2022program}
+Wenhu Chen, Xueguang Ma, Xinyi Wang, and William~W. Cohen.
+\newblock Program of thoughts prompting: Disentangling computation from
+  reasoning for numerical reasoning tasks, 2022.
+
+\bibitem[Gao et~al.(2023)Gao, Madaan, Zhou, Alon, Liu, Yang, Callan, and
+  Neubig]{gao2023pal}
+Luyu Gao, Aman Madaan, Shuyan Zhou, Uri Alon, Pengfei Liu, Yiming Yang, Jamie
+  Callan, and Graham Neubig.
+\newblock {PAL}: Program-aided language models.
+\newblock In \emph{ICML}, 2023.
+
+\bibitem[Teerapittayanon et~al.(2016)Teerapittayanon, McDanel, and
+  Kung]{teerapittayanon2016branchynet}
+Surat Teerapittayanon, Bradley McDanel, and H.T. Kung.
+\newblock {BranchyNet}: Fast inference via early exiting from deep neural
+  networks.
+\newblock In \emph{International Conference on Pattern Recognition (ICPR)},
+  2016.
+
+\bibitem[Schwartz et~al.(2020)Schwartz, Stanovsky, Swayamdipta, Dodge, and
+  Smith]{schwartz2020right}
+Roy Schwartz, Gabriel Stanovsky, Swabha Swayamdipta, Jesse Dodge, and Noah~A.
+  Smith.
+\newblock The right tool for the job: Matching model and instance complexities.
+\newblock In \emph{ACL}, 2020.
+
+\bibitem[Raposo et~al.(2024)Raposo, Ritter, Richards, Lillicrap, Humphreys, and
+  Santoro]{raposo2024moe}
+David Raposo, Sam Ritter, Blake Richards, Timothy Lillicrap, Peter~Conway
+  Humphreys, and Adam Santoro.
+\newblock Mixture-of-depths: Dynamically allocating compute in transformer
+  models, 2024.
+
+\bibitem[Banino et~al.(2021)Banino, Balaguer, and
+  Blundell]{banino2021pondernet}
+Andrea Banino, Jan Balaguer, and Charles Blundell.
+\newblock {PonderNet}: Learning to ponder, 2021.
+
+\bibitem[Tu et~al.(2023)Tu, Azizi, Driess, Schaekermann, Amin, Chang, Carroll,
+  Lau, Tanno, Ktena, Mustafa, Chowdhery, Liu, Kornblith, Fleet, Mansfield,
+  Prakash, Wong, Virmani, Semturs, Mahdavi, Green, Dominowska, y~Arcas, Barral,
+  Webster, Corrado, Matias, Singhal, Florence, Karthikesalingam, and
+  Natarajan]{tu2024medpalm}
+Tao Tu, Shekoofeh Azizi, Danny Driess, Mike Schaekermann, Mohamed Amin,
+  Pi-Chuan Chang, Andrew Carroll, Chuck Lau, Ryutaro Tanno, Ira Ktena, Basil
+  Mustafa, Aakanksha Chowdhery, Yun Liu, Simon Kornblith, David Fleet, Philip
+  Mansfield, Sushant Prakash, Renee Wong, Sunny Virmani, Christopher Semturs,
+  S~Sara Mahdavi, Bradley Green, Ewa Dominowska, Blaise~Aguera y~Arcas, Joelle
+  Barral, Dale Webster, Greg~S. Corrado, Yossi Matias, Karan Singhal, Pete
+  Florence, Alan Karthikesalingam, and Vivek Natarajan.
+\newblock Towards generalist biomedical ai, 2023.
+\newblock URL \url{https://arxiv.org/abs/2307.14334}.
+
+\bibitem[Li et~al.(2023)Li, Wong, Zhang, Usuyama, Liu, Yang, Naumann, Poon, and
+  Gao]{li2024llavamed}
+Chunyuan Li, Cliff Wong, Sheng Zhang, Naoto Usuyama, Haotian Liu, Jianwei Yang,
+  Tristan Naumann, Hoifung Poon, and Jianfeng Gao.
+\newblock Llava-med: Training a large language-and-vision assistant for
+  biomedicine in one day, 2023.
+\newblock URL \url{https://arxiv.org/abs/2306.00890}.
+
+\bibitem[Saab et~al.(2024)Saab, Tu, Weng, Tanno, Stutz, Wulczyn, Zhang,
+  Strother, Park, Vedadi, Chaves, Hu, Schaekermann, Kamath, Cheng, Barrett,
+  Cheung, Mustafa, Palepu, McDuff, Hou, Golany, Liu, baptiste Alayrac, Houlsby,
+  Tomasev, Freyberg, Lau, Kemp, Lai, Azizi, Kanada, Man, Kulkarni, Sun,
+  Shakeri, He, Caine, Webson, Latysheva, Johnson, Mansfield, Lu, Rivlin,
+  Anderson, Green, Wong, Krause, Shlens, Dominowska, Eslami, Chou, Cui,
+  Vinyals, Kavukcuoglu, Manyika, Dean, Hassabis, Matias, Webster, Barral,
+  Corrado, Semturs, Mahdavi, Gottweis, Karthikesalingam, and
+  Natarajan]{tu2025medgemini}
+Khaled Saab, Tao Tu, Wei-Hung Weng, Ryutaro Tanno, David Stutz, Ellery Wulczyn,
+  Fan Zhang, Tim Strother, Chunjong Park, Elahe Vedadi, Juanma~Zambrano Chaves,
+  Szu-Yeu Hu, Mike Schaekermann, Aishwarya Kamath, Yong Cheng, David G.~T.
+  Barrett, Cathy Cheung, Basil Mustafa, Anil Palepu, Daniel McDuff, Le~Hou,
+  Tomer Golany, Luyang Liu, Jean baptiste Alayrac, Neil Houlsby, Nenad Tomasev,
+  Jan Freyberg, Charles Lau, Jonas Kemp, Jeremy Lai, Shekoofeh Azizi, Kimberly
+  Kanada, SiWai Man, Kavita Kulkarni, Ruoxi Sun, Siamak Shakeri, Luheng He, Ben
+  Caine, Albert Webson, Natasha Latysheva, Melvin Johnson, Philip Mansfield,
+  Jian Lu, Ehud Rivlin, Jesper Anderson, Bradley Green, Renee Wong, Jonathan
+  Krause, Jonathon Shlens, Ewa Dominowska, S.~M.~Ali Eslami, Katherine Chou,
+  Claire Cui, Oriol Vinyals, Koray Kavukcuoglu, James Manyika, Jeff Dean, Demis
+  Hassabis, Yossi Matias, Dale Webster, Joelle Barral, Greg Corrado,
+  Christopher Semturs, S.~Sara Mahdavi, Juraj Gottweis, Alan Karthikesalingam,
+  and Vivek Natarajan.
+\newblock Capabilities of gemini models in medicine, 2024.
+\newblock URL \url{https://arxiv.org/abs/2404.18416}.
+
+\bibitem[Thawakar et~al.(2025)Thawakar, Shaker, Mullappilly, Cholakkal, Anwer,
+  Khan, Laaksonen, and Khan]{chen2024xrayglm}
+Omkar Thawakar, Abdelrahman Shaker, Sahal~Shaji Mullappilly, Hisham Cholakkal,
+  Rao~Muhammad Anwer, Salman Khan, Jorma Laaksonen, and Fahad~Shahbaz Khan.
+\newblock Xraygpt: Chest radiographs summarization using medical
+  vision-language models, 2025.
+\newblock URL \url{https://arxiv.org/abs/2306.07971}.
+
+\bibitem[Selvaraju et~al.(2019)Selvaraju, Cogswell, Das, Vedantam, Parikh, and
+  Batra]{selvaraju2017gradcam}
+Ramprasaath~R. Selvaraju, Michael Cogswell, Abhishek Das, Ramakrishna Vedantam,
+  Devi Parikh, and Dhruv Batra.
+\newblock Grad-cam: Visual explanations from deep networks via gradient-based
+  localization.
+\newblock \emph{International Journal of Computer Vision}, 128\penalty0
+  (2):\penalty0 336–359, October 2019.
+\newblock ISSN 1573-1405.
+\newblock \doi{10.1007/s11263-019-01228-7}.
+\newblock URL \url{http://dx.doi.org/10.1007/s11263-019-01228-7}.
+
+\bibitem[Obermeyer et~al.(2019)Obermeyer, Powers, Vogeli, and
+  Mullainathan]{obermeyer2019dissecting}
+Ziad Obermeyer, Brian Powers, Christine Vogeli, and Sendhil Mullainathan.
+\newblock Dissecting racial bias in an algorithm used to manage the health of
+  populations.
+\newblock \emph{Science}, 366\penalty0 (6464):\penalty0 447--453, 2019.
+\newblock \doi{10.1126/science.aax2342}.
+\newblock URL \url{https://www.science.org/doi/abs/10.1126/science.aax2342}.
+
+\bibitem[Jing et~al.(2017)Jing, Xie, and Xing]{jing2017automatic}
+Baoyu Jing, Pengtao Xie, and Eric Xing.
+\newblock On the automatic generation of medical imaging reports.
+\newblock \emph{arXiv preprint arXiv:1711.08195}, 2017.
+
+\bibitem[Chen et~al.(2020)Chen, Song, Chang, and Wan]{chen2020generating}
+Zhihong Chen, Yan Song, Tsung-Hui Chang, and Xiang Wan.
+\newblock Generating radiology reports via memory-driven transformer.
+\newblock In \emph{Proceedings of the 2020 Conference on Empirical Methods in
+  Natural Language Processing}, pages 1439--1449, 2020.
+
+\bibitem[Miura et~al.(2021)Miura, Zhang, Tsai, Langlotz, and
+  Jurafsky]{miura2021improving}
+Yasuhide Miura, Yuhao Zhang, Emily~Bao Tsai, Curtis~P Langlotz, and Dan
+  Jurafsky.
+\newblock Improving factual completeness and consistency of image-to-text
+  radiology report generation.
+\newblock In \emph{Proceedings of the 2021 Conference of the North American
+  Chapter of the Association for Computational Linguistics}, pages 5288--5304,
+  2021.
+
+\bibitem[Hyland et~al.(2024)Hyland, Bannur, Bouzid, Castro, Sharma, Seyal,
+  Ilse, Perez-Garcia, Oktay, Alvarez-Valle, and Usuyama]{hyland2024maira}
+Stephanie~L Hyland, Shruthi Bannur, Kenza Bouzid, Daniel~C Castro, Harshita
+  Sharma, Valentina Seyal, Maximilian Ilse, Fernando Perez-Garcia, Ozan Oktay,
+  Javier Alvarez-Valle, and Naoto Usuyama.
+\newblock {MAIRA-1}: A specialised large multimodal model for radiology report
+  generation.
+\newblock \emph{arXiv preprint arXiv:2311.13668}, 2024.
+
+\bibitem[Chen et~al.(2024)Chen, Varma, Delbrouck, Payne, Zamanian, Peng,
+  et~al.]{chen2024chexagent}
+Zhihong Chen, Maya Varma, Jean-Benoit Delbrouck, Marcus Payne, Louis Zamanian,
+  Andrew Peng, et~al.
+\newblock {CheXagent}: Towards a foundation model for chest x-ray analysis.
+\newblock \emph{arXiv preprint arXiv:2401.12208}, 2024.
+
+\bibitem[Menze and al.(2015)]{menze2015brats}
+Bjoern~H. Menze and al.
+\newblock The multimodal brain tumor image segmentation benchmark (brats).
+\newblock \emph{IEEE Transactions on Medical Imaging}, 34\penalty0
+  (10):\penalty0 1993--2024, October 2015.
+\newblock \doi{10.1109/TMI.2014.2377694}.
+\newblock Epub 2014 Dec 4.
+
+\bibitem[LaBella et~al.(2023)LaBella, Adewole, Alonso-Basanta, Altes, Anwar,
+  Baid, Bergquist, Bhalerao, Chen, Chung, Conte, Dako, Eddy, Ezhov, Godfrey,
+  Hilal, Familiar, Farahani, Iglesias, Jiang, Johanson, Kazerooni, Kent,
+  Kirkpatrick, Kofler, Leemput, Li, Liu, Mahtabfar, McBurney-Lin, McLean,
+  Meier, Moawad, Mongan, Nedelec, Pajot, Piraud, Rashid, Reitman, Shinohara,
+  Velichko, Wang, Warman, Wiggins, Aboian, Albrecht, Anazodo, Bakas, Flanders,
+  Janas, Khanna, Linguraru, Menze, Nada, Rauschecker, Rudie, Tahon,
+  Villanueva-Meyer, Wiestler, and Calabrese]{labella2023brats}
+Dominic LaBella, Maruf Adewole, Michelle Alonso-Basanta, Talissa Altes,
+  Syed~Muhammad Anwar, Ujjwal Baid, Timothy Bergquist, Radhika Bhalerao, Sully
+  Chen, Verena Chung, Gian-Marco Conte, Farouk Dako, James Eddy, Ivan Ezhov,
+  Devon Godfrey, Fathi Hilal, Ariana Familiar, Keyvan Farahani, Juan~Eugenio
+  Iglesias, Zhifan Jiang, Elaine Johanson, Anahita~Fathi Kazerooni, Collin
+  Kent, John Kirkpatrick, Florian Kofler, Koen~Van Leemput, Hongwei~Bran Li,
+  Xinyang Liu, Aria Mahtabfar, Shan McBurney-Lin, Ryan McLean, Zeke Meier,
+  Ahmed~W Moawad, John Mongan, Pierre Nedelec, Maxence Pajot, Marie Piraud,
+  Arif Rashid, Zachary Reitman, Russell~Takeshi Shinohara, Yury Velichko,
+  Chunhao Wang, Pranav Warman, Walter Wiggins, Mariam Aboian, Jake Albrecht,
+  Udunna Anazodo, Spyridon Bakas, Adam Flanders, Anastasia Janas, Goldey
+  Khanna, Marius~George Linguraru, Bjoern Menze, Ayman Nada, Andreas~M
+  Rauschecker, Jeff Rudie, Nourel~Hoda Tahon, Javier Villanueva-Meyer, Benedikt
+  Wiestler, and Evan Calabrese.
+\newblock The asnr-miccai brain tumor segmentation (brats) challenge 2023:
+  Intracranial meningioma, 2023.
+\newblock URL \url{https://arxiv.org/abs/2305.07642}.
+
+\bibitem[Bakas et~al.(2024)]{bakas20242024}
+Spyridon Bakas et~al.
+\newblock The brats 2024 challenge, 2024.
+\newblock URL \url{https://www.synapse.org/brats2024}.
+\newblock MICCAI Challenge.
+
+\bibitem[{European Parliament} and {Council of the European
+  Union}(2024)]{euaiact2024}
+{European Parliament} and {Council of the European Union}.
+\newblock Regulation ({EU}) 2024/1689 of the european parliament and of the
+  council of 13 june 2024 laying down harmonised rules on artificial
+  intelligence (artificial intelligence act).
+\newblock Technical Report L series, 2024/1689, Official Journal of the
+  European Union, 2024.
+\newblock OJ L, 2024/1689, 12.7.2024.
+
+\bibitem[{ISO/IEC JTC 1/SC 42}(2023)]{iso42001}
+{ISO/IEC JTC 1/SC 42}.
+\newblock {ISO/IEC 42001:2023} --- information technology --- artificial
+  intelligence --- management system.
+\newblock International standard, International Organization for
+  Standardization, 2023.
+
+\bibitem[{National Institute of Standards and Technology}(2023)]{nist_rmf}
+{National Institute of Standards and Technology}.
+\newblock {AI} risk management framework ({AI RMF} 1.0).
+\newblock Technical Report NIST AI 100-1, U.S. Department of Commerce, NIST,
+  2023.
+
+\bibitem[Johnson et~al.(2019)Johnson, Pollard, Berkowitz, Greenbaum, Lungren,
+  Deng, Mark, and Horng]{johnson2019mimic}
+Alistair E~W Johnson, Tom~J Pollard, Seth~J Berkowitz, Nathaniel~R Greenbaum,
+  Matthew~P Lungren, Chih-ying Deng, Roger~G Mark, and Steven Horng.
+\newblock {MIMIC-CXR}, a de-identified publicly available database of chest
+  radiographs with free-text reports.
+\newblock \emph{Scientific Data}, 6\penalty0 (1):\penalty0 317, 2019.
+\newblock \doi{10.1038/s41597-019-0322-0}.
+
+\bibitem[Anonymous(2024)]{mimic_aug}
+Anonymous.
+\newblock {MIMIC-CXR} augmented report dataset, 2024.
+\newblock 500-case validation split with augmented radiology reports, used for
+  qualitative evaluation in this work. Full attribution to be provided upon
+  publication.
+  
+ \bibitem[Mayumu et al.(2025)Mayumu, Xiaoheng, Mukala, Khan, and Saeed]{mayumu2025omniv2x}
+ Nicanor Mayumu, Deng Xiaoheng, Patrick Mukala, Saif Ur Rehman Khan, and Muhammad Usman Saeed.
+ \newblock {Omni-V2X}: A Vision-Language Model for Actionable Insights in Vehicle-to-Everything Systems.
+ \newblock In \emph{2025 International Joint Conference on Neural Networks (IJCNN)}, pages 1--8, 2025.
+ \newblock IEEE.
+ \newblock doi:10.1109/IJCNN64981.2025.11228491.
+
+\end{thebibliography}
