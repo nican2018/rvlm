@@ -1,5 +1,5 @@
 [project]
-name = "rvlm-framework"
+name = "RVLMs"
 authors = [
     {name = "Nicanor Mayumu"},
     {name = "Zeenath Khan"},

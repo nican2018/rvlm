@@ -68,14 +68,20 @@ A **clinical PDF reporting sub-agent** converts RVLM outputs into formal, doctor
 
 ## Installation
 
-### Option 1 — Conda (recommended)
+### Option 1 — PyPI
+
+```bash
+pip install RVLMs
+```
+
+### Option 2 — Conda (recommended for development)
 
 ```bash
 conda env create -f environment.yml
 conda activate rvlm
 ```
 
-### Option 2 — pip (editable)
+### Option 3 — pip (editable)
 
 ```bash
 pip install -e .
